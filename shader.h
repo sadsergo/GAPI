@@ -147,3 +147,18 @@ Vec4 colorBarShader(const float col[3][4], const float &w0,
   
   return Res;
 }
+
+Vec4 colorSideShader(const float col[3][4], const float &w0, 
+  const float &w1, const float &w2, const float &w)
+{
+  float eps = 0.03;
+  Vec4 Res {0,0,0,0};
+
+  if (w0 <= eps || w1 <= eps || w2 <= eps) {
+    Res.x = 0;
+    Res.y = 255;
+    Res.z = 0;
+  }
+
+  return Res;
+}
