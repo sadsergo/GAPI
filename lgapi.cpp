@@ -78,7 +78,7 @@ struct MyRender : public IRender
                           const int &y0, const int &y1, const float p[3][4], const float col[3][4], const float uv[3][2], 
                           const PipelineStateObject &a_state, const Vec4 &LightDir, const Vec4 &Norm);
   void BeginRenderPass(Image2D &fb, LightObj *L) override;
-  void Draw(PipelineStateObject a_state, Geom a_geom, float angle) override;
+  void Draw(PipelineStateObject a_state, Geom a_geom) override;
   void EndRenderPass(Image2D &fb) override;
 };
 
@@ -211,7 +211,7 @@ MyRender::pixel_rasterisation(const Vec2& A, const Vec2& B, const Vec2& C, const
       }  
 }
 
-void MyRender::Draw(PipelineStateObject a_state, Geom a_geom, float angle = 0.0)
+void MyRender::Draw(PipelineStateObject a_state, Geom a_geom)
 {
   float worldViewProj[16];
 
@@ -225,23 +225,6 @@ void MyRender::Draw(PipelineStateObject a_state, Geom a_geom, float angle = 0.0)
   }
 
   Vec4 vertex_vec;
-
-  float rotatedWorldViewProj[16];
-  float rotateMtrx[16] = {
-    cos(angle), 0, sin(angle), 0,
-    0,          1,          0, 0,
-    -sin(angle),0, cos(angle), 0,
-    0,          0,          0, 1,
-  };
-
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      rotatedWorldViewProj[i * 4 + j] = 0.f;
-      for (int k = 0; k < 4; k++) {
-        rotatedWorldViewProj[i * 4 + j] += worldViewProj[i * 4 + k] * rotateMtrx[k * 4 + j];
-      }
-    }
-  }
 
   for (unsigned int tr_num = 0; tr_num < a_geom.primsNum; tr_num++) {
     unsigned vert_indx[3] = {
@@ -273,7 +256,7 @@ void MyRender::Draw(PipelineStateObject a_state, Geom a_geom, float angle = 0.0)
       }
 
       vertex_vec = a_state.shader_container->vertexShader
-        (rotatedWorldViewProj, a_geom, vpos4f_i);
+        (worldViewProj, a_geom, vpos4f_i);
 
       p[ind_ver][0] = vertex_vec.x;
       p[ind_ver][1] = vertex_vec.y;
@@ -345,86 +328,7 @@ void MyRender::Draw(PipelineStateObject a_state, Geom a_geom, float angle = 0.0)
     int q = 8;
     int blockSize = q;
     
-    if ((x1 - x0) / (y1 - y0) >= 10) {
-      int halfY = y0 + ((y1 - y0) >> 1) & ~(q - 1);
-      Vec2 D = (A.getY() == y0) ? A : (B.getY() == y0) ? B : C;
-
-      int leftPoint = (int)D.getX() - (int)D.getX() % blockSize, rightPoint = leftPoint + 2 * blockSize;
-
-      for (int j = y0; j <= halfY + blockSize; j += blockSize) {
-        int midPoint = leftPoint + ((rightPoint - leftPoint) >> 1) & ~(q - 1);
-        int x = midPoint;
-
-        for (int k = 0; k < 2; ++k) {
-          for (;(q > 0 ? x < x1 : x > x0 - blockSize); x += q) {
-            float C1x = (x), C1y = (x + blockSize - 1), C2y = j, C2x = (j + blockSize - 1);
-            Vec2 M1(C1x, C2x), M2(C1x, C2x), M3(C1y, C2y), M4(C1y, C2x);
-            bool L1 = isInTriangle(performEdgeFunc(A, B, C , M1)), L2 = isInTriangle(performEdgeFunc(A, B, C , M2));
-            bool L3 = isInTriangle(performEdgeFunc(A, B, C , M3)), L4 = isInTriangle(performEdgeFunc(A, B, C , M4));
-
-            if (L1 && L2 && L3 && L4) {
-              block_rasterisation(A, B, C, blockSize, j, x, p, col, uv, a_state, LightDir, Norm);
-
-              continue;
-            }
-            else if (!L1 && !L2 && !L3 && !L4) {
-                continue;
-            }
-          }
-
-          q = -q;
-            
-          if (k == 0) {
-            rightPoint = x - blockSize;
-          }
-          else {
-            leftPoint = x + blockSize;
-          }
-
-          x = midPoint - blockSize;
-        }
-      }
-
-      D = (A.getY() == y1) ? A : (B.getY() == y1) ? B : C;
-      leftPoint = (int)D.getX() - (int)D.getX() % blockSize - blockSize, rightPoint = leftPoint + 2 * blockSize;
-
-      for (int j = y1 & ~(blockSize - 1); j >= halfY; j -= blockSize) {
-        int midPoint = leftPoint + ((rightPoint - leftPoint) >> 1) & ~(q - 1);
-        int x = midPoint;
-
-        for (int k = 0; k < 2; ++k) {
-          for (;(q > 0 ? x < x1 : x > x0 - blockSize); x += q) {
-            float C1x = (x), C1y = (x + blockSize - 1), C2y = j, C2x = (j + blockSize - 1);
-            Vec2 M1(C1x, C2x), M2(C1x, C2x), M3(C1y, C2y), M4(C1y, C2x);
-            bool L1 = isInTriangle(performEdgeFunc(A, B, C , M1)), L2 = isInTriangle(performEdgeFunc(A, B, C , M2));
-            bool L3 = isInTriangle(performEdgeFunc(A, B, C , M3)), L4 = isInTriangle(performEdgeFunc(A, B, C , M4));
-            
-            if (!L1 && !L2 && !L3 && !L4) {
-                continue;
-            }
-            else if (L1 && L2 && L3 && L4) {
-              block_rasterisation(A, B, C, blockSize, j, x, p, col, uv, a_state, LightDir, Norm);
-              
-              continue;
-            }
-          }
-
-          q = -q;
-            
-          if (k == 0) {
-            rightPoint = x - blockSize;
-          }
-          else {
-            leftPoint = x + blockSize;
-          }
-
-          x = midPoint - blockSize;
-        }
-      }
-    }
-    else {
-      pixel_rasterisation(A, B, C, blockSize, x0, x1, y0, y1, p, col, uv, a_state, LightDir, Norm);
-    }
+    pixel_rasterisation(A, B, C, blockSize, x0, x1, y0, y1, p, col, uv, a_state, LightDir, Norm);
   }
 }
 
