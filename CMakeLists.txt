@@ -33,6 +33,9 @@ add_executable(testapp main.cpp
                        Bitmap.cpp
                        lgapi.cpp
                        scene.cpp
+                       VBHB.cpp
+                       Vec.cpp
+                       Mat.cpp
                        )
 endif()
 
@@ -41,5 +44,5 @@ set_target_properties(testapp PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_
 if(USE_OPENGL)
   target_link_libraries(testapp LINK_PUBLIC OpenMP::OpenMP_CXX X11 GL GLU glut) # for reference implementation
 else()
-  target_link_libraries(testapp LINK_PUBLIC OpenMP::OpenMP_CXX X11)                 # for your implementation
+  target_link_libraries(testapp LINK_PUBLIC OpenMP::OpenMP_CXX ) # No X11                 # for your implementation
 endif()

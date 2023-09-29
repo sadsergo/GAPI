@@ -1,3 +1,4 @@
+
 #include "lgapi.h"
 #include <memory>
 #include <iostream>
@@ -6,7 +7,13 @@
 #include <algorithm>
 #include <cstring>
 
+#include "VBHB.h"
+#include "Vec.h"
+#include "Mat.h"
+
 using namespace std;
+
+
 
 Vec2 operator - (const Vec2 &a, const Vec2 &B) 
 {
@@ -79,6 +86,7 @@ struct MyRender : public IRender
                           const PipelineStateObject &a_state, const Vec4 &LightDir, const Vec4 &Norm);
   void BeginRenderPass(Image2D &fb, LightObj *L) override;
   void Draw(PipelineStateObject a_state, Geom a_geom) override;
+  void Vec_Draw(PipelineStateObject a_state, Geom a_geom) override;
   void EndRenderPass(Image2D &fb) override;
 };
 
@@ -211,6 +219,41 @@ MyRender::pixel_rasterisation(const Vec2& A, const Vec2& B, const Vec2& C, const
       }  
 }
 
+void MyRender::Vec_Draw(PipelineStateObject a_state, Geom a_geom)
+{
+  Mat<4, float> projMat(a_state.projMatrix);                      //  Create perspective proj mtrx
+  std::unique_ptr<VBHB> tree = std::unique_ptr<VBHB>(new VBHB);                                                     //  Init VBHB tree
+
+  for (unsigned int tr_num = 0; tr_num < a_geom.primsNum; tr_num++) {   //  Loop over everyone triangle
+    unsigned vert_indx[3] = {                                           //  Take indx of 3 corners
+      a_geom.indices[tr_num * 3 + 0],
+      a_geom.indices[tr_num * 3 + 1],
+      a_geom.indices[tr_num * 3 + 2]
+    };
+
+    Vec<4, float> triangle[3];                                            // Save corners's pos to array
+
+    for (int ind_ver = 0; ind_ver < 3; ++ind_ver) {
+      float vpos4f_i[4] = {
+        a_geom.vpos4f[4 * vert_indx[ind_ver]],
+        a_geom.vpos4f[4 * vert_indx[ind_ver] + 1],
+        a_geom.vpos4f[4 * vert_indx[ind_ver] + 2],
+        a_geom.vpos4f[4 * vert_indx[ind_ver] + 3],
+      };
+
+      Vec<4, float> p(vpos4f_i);                                         // Project triangle on the 2D plane
+
+      triangle[ind_ver] = projMat * p;
+      triangle[ind_ver][0] /= triangle[ind_ver][3];
+      triangle[ind_ver][1] /= triangle[ind_ver][3];
+      triangle[ind_ver][2] /= triangle[ind_ver][3];
+    }
+
+    std::vector<std::unique_ptr<float>> p = VBHB::traverse(triangle, tree);  //  Collect all intersected polygons
+    
+  }
+}
+
 void MyRender::Draw(PipelineStateObject a_state, Geom a_geom)
 {
   float worldViewProj[16];
@@ -255,8 +298,7 @@ void MyRender::Draw(PipelineStateObject a_state, Geom a_geom)
         }
       }
 
-      vertex_vec = a_state.shader_container->vertexShader
-        (worldViewProj, a_geom, vpos4f_i);
+      vertex_vec = a_state.shader_container->vertexShader(worldViewProj, a_geom, vpos4f_i);
 
       p[ind_ver][0] = vertex_vec.x;
       p[ind_ver][1] = vertex_vec.y;

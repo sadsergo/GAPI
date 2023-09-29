@@ -6,58 +6,62 @@
 #include <cstdint>
 #include <chrono>
 #include<sys/wait.h>
+#include <ctime>
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/Xos.h>
+// #include <X11/Xlib.h>
+// #include <X11/Xutil.h>
+// #include <X11/Xos.h>
 
 #include "Bitmap.h"
 #include "lgapi.h"
 #include "scene.h"
 #include "shader.h"
 #include "OBJparsing.h"
+#include "VBHB.h"
+#include "Vec.h"
+#include "Mat.h"
 
-Display *dis;
-int default_screen;
-Window win;
-GC gc;
-Visual *vis;
-int default_depth = 0;
+// Display *dis;
+// int default_screen;
+// Window win;
+// GC gc;
+// Visual *vis;
+// int default_depth = 0;
 
-unsigned long black, white, blue;
+// unsigned long black, white, blue;
 
-void init()
-{
-  int x = 100, y = 100;
-  dis = XOpenDisplay((char *)0);
+// void init()
+// {
+//   int x = 100, y = 100;
+//   dis = XOpenDisplay((char *)0);
 
-  default_screen = XDefaultScreen(dis);
-  win = XCreateSimpleWindow(dis, DefaultRootWindow(dis), 0, 0, 1024, 1024, 5, white, black);
-  vis = DefaultVisual(dis, default_screen);
-  default_depth = XDefaultDepth(dis, default_screen);
+//   default_screen = XDefaultScreen(dis);
+//   win = XCreateSimpleWindow(dis, DefaultRootWindow(dis), 0, 0, 1024, 1024, 5, white, black);
+//   vis = DefaultVisual(dis, default_screen);
+//   default_depth = XDefaultDepth(dis, default_screen);
 
-  XSetStandardProperties(dis, win, "h", "w", None, NULL, 0, NULL);
-  XSelectInput(dis, win, ExposureMask | ButtonPressMask | KeyPressMask);
+//   XSetStandardProperties(dis, win, "h", "w", None, NULL, 0, NULL);
+//   XSelectInput(dis, win, ExposureMask | ButtonPressMask | KeyPressMask);
 
-  gc = XCreateGC(dis, win, 0, 0);
-  XSetBackground(dis, gc, white);
-  XSetForeground(dis, gc, black);
-  XClearWindow(dis, win);
-  XMapRaised(dis, win);
-}
+//   gc = XCreateGC(dis, win, 0, 0);
+//   XSetBackground(dis, gc, white);
+//   XSetForeground(dis, gc, black);
+//   XClearWindow(dis, win);
+//   XMapRaised(dis, win);
+// }
 
-void close()
-{
-  XFreeGC(dis, gc);
-  XDestroyWindow(dis, win);
-  XCloseDisplay(dis);
-  exit(0);
-}
+// void close()
+// {
+//   XFreeGC(dis, gc);
+//   XDestroyWindow(dis, win);
+//   XCloseDisplay(dis);
+//   exit(0);
+// }
 
-void draw()
-{
-  XClearWindow(dis, win);
-}
+// void draw()
+// {
+//   XClearWindow(dis, win);
+// }
 
 std::shared_ptr<IRender> MakeReferenceImpl(); ///< reference implementation via OpenGL
 std::shared_ptr<IRender> MakeMyImpl();        ///< your implementation
@@ -84,7 +88,8 @@ void DrawInstances(const SimpleScene& scn, std::shared_ptr<IRender> pRender, REN
       pso.imgId = scn.textures[instId];  
     else
       pso.imgId = uint32_t(-1);          
-    pRender->Draw(pso, geom);
+    // pRender->Draw(pso, geom);
+    pRender->Vec_Draw(pso, geom);
   }
 }
 
@@ -433,24 +438,25 @@ int main(int argc, const char** argv)
 
     double angle = 0.f * M_PI / 180.f;
     float rotate[16] = {
-      cos(angle), 0, -sin(angle), 0,
+      (float)cos(angle), 0, -(float)sin(angle), 0,
       0, 1, 0, 0,
-      sin(angle), 0, cos(angle), 0,
+      (float)sin(angle), 0, (float)cos(angle), 0,
       0, 0, 0, 1
     };
     
     Mat<4, float> modelMat(model), scaleMat(scale), rotateMat(rotate);
-
-    float cameraCoords[4] = {0, 0, -200, 1}, targetCoords[4] = {0, 0, 0, 1}, upCoords[4] = {0, 1, 0, 1};
+    float t = time(NULL);
+    // float cameraCoords[4] = {200 * (float)cos(t), 30, 200 * (float)sin(t), 1};
+    float cameraCoords[4] = {0, 30, -200, 1};
+    float targetCoords[4] = {0, 0, 0, 1}, upCoords[4] = {0, 1, 0, 1};
     Vec<4, float> P(cameraCoords);
     Vec<4, float> target(targetCoords), up(upCoords);
     // float r0[4] = {0, -50, 200, 1};
     // Vec<4, float> r0Vec(r0);
     // Vec<4, float> r1 = P - r0Vec - r0Vec; 
-    Vec<4, float> newP = rotateMat * P;
     // Vec<4, float> nP = newP + r0Vec + r0Vec;
 
-    Mat<4, float> viewMat = lookAt(newP, target, up);
+    Mat<4, float> viewMat = lookAt(P, target, up);
     Mat<4, float> viewModel =  viewMat * modelMat;
 
     std::string file_name1 = "./data/uploads_files_3425113_VenuDeMilo.obj";
