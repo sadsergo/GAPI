@@ -6,11 +6,18 @@
 #include "Vec.h"
 #include "Mat.h"
 
+enum 
+{
+    Qin = 2,
+    Pin = 1,
+    Unknown = 0,
+};
+
 class VBHB_NODE
 {
 private:
-    std::vector<std::unique_ptr<float>> P;
-    std::vector<std::unique_ptr<float>> bounding_box;
+    std::vector<Vec<4, float>> P;
+    std::vector<Vec<4, float>> bounding_box;
     bool is_root;
 
 public:
@@ -27,33 +34,45 @@ public:
 class VBHB 
 {
 private:
-    std::unique_ptr<VBHB_NODE> node;
-    std::unique_ptr<VBHB_NODE> right_node, left_node;
+    VBHB_NODE* node;
+    VBHB_NODE* right_node, left_node;
 
 public:
     VBHB()
     {
-        this->node = std::unique_ptr<VBHB_NODE>(new VBHB_NODE(true));
+        // this->node = std::unique_ptr<VBHB_NODE>(new VBHB_NODE(true));
+        this->node = new VBHB_NODE (true);
         this->right_node = nullptr;
         this->left_node = nullptr;
     }
 
-    void insert(float triange[3], std::vector<std::unique_ptr<float>> P);
+    void insert(float triange[3], std::vector<Vec<4, float>>& P);
     
-    static std::vector<std::unique_ptr<float>> 
-    traverse(Vec<4, float> triange[3], std::unique_ptr<VBHB>& node)
+    static std::vector<Vec<4, float>> 
+    traverse(std::vector<Vec<4, float>> triangle, VBHB* node)
     {
-        std::vector<std::unique_ptr<float>> p;
+        std::vector<Vec<4, float>> p;
+        
 
         if (node->left_node == nullptr && node->right_node == nullptr) {
-            
+            if (intersect(triangle, node->node->P).size() == 0) {
+                return node->node->P;
+            }
+            else {
+                return p;
+            }
         }
 
-        return p;
+        if (intersect(triangle, node->node->bounding_box).size() == 0) {
+            return p;
+        }
+
+        return traverse(triangle, node->left_node);
+        return traverse(triangle, node->right_node);
     }
 
     bool 
-    SAT(Vec<4, float> triangle[3], std::vector<std::unique_ptr<float>>& polygon)
+    SAT(Vec<4, float> triangle[3], std::vector<Vec<4, float>>& polygon)
     {
         Vec<4, float> AB = triangle[0] - triangle[1], BC = triangle[1] - triangle[2], CA = triangle[2] - triangle[0];
         float AB_size_2 = dot(AB, AB), BC_size_2 = dot(BC, BC), CA_size_2 = dot(CA, CA);
@@ -68,4 +87,17 @@ public:
     }
 };
 
+/*
+open_swr
+*/
+
 int orient(Vec<4, float> triangle[3]);
+std::vector<Vec<4, float>> intersect(const std::vector<Vec<4, float>>&, const std::vector<Vec<4, float>>&);
+int areaSign(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
+char SegSegInt(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&, Vec<4, float>&);
+char ParallelInt(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&, Vec<4, float>&);
+void Assigndi(Vec<4, float>&, const Vec<4, float>&);
+bool Between(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
+bool Collinear(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
+int InOut(const Vec<4, float>&, const int&, const int&, const int&);
+int Advance(int, int *, int, bool, const Vec<4, float>&);

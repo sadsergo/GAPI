@@ -477,6 +477,38 @@ int main(int argc, const char** argv)
     std::string name = imgName + "10.bmp";  
     SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
     std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+
+    std::vector<Vec<4, float>> P1, P2;
+    float coordsP1[10] = {16, -3, 28, 16, 16, 32, 0, 22, 3, 10}; 
+    float coordsP2[20] = {0, 16, 5, 8, 13, 0, 19, 2, 24, 10, 24, 26, 19, 26, 13, 32, 7, 32, 3, 29};
+
+    for (int i = 0; i < 5; ++i) {
+      float c[4];
+
+      c[0] = coordsP1[2 * i];
+      c[1] = coordsP1[2 * i + 1];
+      c[2] = 0;
+      c[3] = 0;
+
+      Vec<4, float> a(c);
+
+      P1.push_back(a);
+    }
+
+    for (int i = 0; i < 10; ++i) {
+      float c[4];
+
+      c[0] = coordsP2[2 * i];
+      c[1] = coordsP2[2 * i + 1];
+      c[2] = 0;
+      c[3] = 0;
+
+      Vec<4, float> a(c);
+
+      P2.push_back(a);
+    }
+
+    intersect(P1, P2);
   }
 
   // // test #11

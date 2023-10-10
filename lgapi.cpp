@@ -249,7 +249,7 @@ void MyRender::Vec_Draw(PipelineStateObject a_state, Geom a_geom)
       triangle[ind_ver][2] /= triangle[ind_ver][3];
     }
 
-    std::vector<std::unique_ptr<float>> p = VBHB::traverse(triangle, tree);  //  Collect all intersected polygons
+    std::vector<Vec<4, float>> p = VBHB::traverse(triangle, tree);  //  Collect all intersected polygons
     
   }
 }
