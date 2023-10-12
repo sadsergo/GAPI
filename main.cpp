@@ -507,8 +507,11 @@ int main(int argc, const char** argv)
 
       P2.push_back(a);
     }
+    std::vector<Vec<4, float>> ans = intersect(P1, P2);
 
-    intersect(P1, P2);
+    for (auto el: ans) {
+      el.show();
+    }
   }
 
   // // test #11

@@ -15,8 +15,8 @@ orient(Vec<4, float> triangle[3])
 int
 areaSign(const Vec<4, float>& a, const Vec<4, float>& b, const Vec<4, float>& c)
 {
-  double area2 = (b[0] - a[0]) * (double)(c[1] - a[1]) - 
-                  (c[0] - a[0]) * (double)(b[1] - a[1]);
+  double area2 = (b[X] - a[X]) * (double)(c[Y] - a[Y]) - 
+                 (c[X] - a[X]) * (double)(b[Y] - a[Y]);
 
   if (area2 > 0.5) {
     return 1;
@@ -41,7 +41,9 @@ Assigndi(Vec<4, float>& p, const Vec<4, float>& a)
 bool 
 Between(const Vec<4, float>& a, const Vec<4, float>& b, const Vec<4, float>& c)
 {
-  Vec<4, float> ba, ca;
+  if (!Collinear(a, b, c)) {
+    return false;
+  }
 
   if (a[X] != b[X]) {
     return ((a[X] <= c[X]) && (c[X] <= b[X])) || 
@@ -87,7 +89,7 @@ ParallelInt(const Vec<4, float>& a, const Vec<4, float>& b, const Vec<4, float>&
     return 'e';
   }
 
-  if (Between(c, d, p)) {
+  if (Between(c, d, b)) {
     Assigndi(p, b);
     return 'e';
   }
@@ -96,18 +98,20 @@ ParallelInt(const Vec<4, float>& a, const Vec<4, float>& b, const Vec<4, float>&
 }
 
 //! Page 224
-char
-SegSegInt(const Vec<4, float>& a, const Vec<4, float>& b, const Vec<4, float>& c, const Vec<4, float>& d, Vec<4, float>& p)
+char 
+SegSegInt(const Vec<4, float>& a, const Vec<4, float>& b, const Vec<4, float>& c, const Vec<4, float>& d, Vec<4, float>& p )
 {
-  double s = 0, t = 0;
+  double s = 0, t = 0; 
   double num = 0, denom = 0;
   char code = '?';
 
-  denom = a[X] * (double)(d[Y] - c[Y]) + 
-          b[X] * (double)(c[Y] - d[Y]) +
+  /* The two parametersof theparametric eqns. */ /* Numerator and denominator of equations. */ /* Return char characterizing intersection. */
+  denom = a[X] * (double)(d[Y] - c[Y]) +
+          b[X] * (double)(c[Y] - d[Y]) + 
           d[X] * (double)(b[Y] - a[Y]) +
           c[X] * (double)(a[Y] - b[Y]);
-
+  /* If denom is zero, then segments are parallel: handle separately. */ if (denom==0.0)
+  
   if (denom == 0.0) {
     return ParallelInt(a, b, c, d, p);
   }
@@ -116,17 +120,17 @@ SegSegInt(const Vec<4, float>& a, const Vec<4, float>& b, const Vec<4, float>& c
         c[X] * (double)(a[Y] - d[Y]) +
         d[X] * (double)(c[Y] - a[Y]);
 
-  if (num == 0.0 || denom == num) {
+  if (num == 0.0 || num == denom) {
     code = 'v';
   }
 
   s = num / denom;
 
-  num = - (a[X] * (double)(c[Y] - b[Y]) +
-           b[X] * (double)(a[Y] - c[Y]) + 
-           c[X] * (double)(b[Y] - a[Y]));
+  num = -(a[X] * (double)(c[Y] - b[Y]) +
+          b[X] * (double)(a[Y] - c[Y]) +
+          c[X] * (double)(b[Y] - a[Y]));
 
-  if ((num == 0.0) || (num == denom)) {
+  if (num == 0.0 || num == denom) {
     code = 'v';
   }
 
@@ -220,7 +224,7 @@ intersect(const std::vector<Vec<4, float>>& P, const std::vector<Vec<4, float>>&
 
     if ((code == 'e') && dot(A, B) < 0) {
       // PrintSharedSeg(p, q);
-      p.show();
+      // p.show();
       exit(EXIT_SUCCESS);
     }
 
@@ -256,7 +260,7 @@ intersect(const std::vector<Vec<4, float>>& P, const std::vector<Vec<4, float>>&
 
   if (!FirstPoint) {
     // LineTo(p0);
-    // p0.show();
+    p0.show();
   }
 
   if (inflag == Unknown) {

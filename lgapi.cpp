@@ -222,7 +222,7 @@ MyRender::pixel_rasterisation(const Vec2& A, const Vec2& B, const Vec2& C, const
 void MyRender::Vec_Draw(PipelineStateObject a_state, Geom a_geom)
 {
   Mat<4, float> projMat(a_state.projMatrix);                      //  Create perspective proj mtrx
-  std::unique_ptr<VBHB> tree = std::unique_ptr<VBHB>(new VBHB);                                                     //  Init VBHB tree
+  VBHB* tree = new VBHB;                                                     //  Init VBHB tree
 
   for (unsigned int tr_num = 0; tr_num < a_geom.primsNum; tr_num++) {   //  Loop over everyone triangle
     unsigned vert_indx[3] = {                                           //  Take indx of 3 corners
@@ -231,7 +231,7 @@ void MyRender::Vec_Draw(PipelineStateObject a_state, Geom a_geom)
       a_geom.indices[tr_num * 3 + 2]
     };
 
-    Vec<4, float> triangle[3];                                            // Save corners's pos to array
+    std::vector<Vec<4, float>> triangle(3);                                            // Save corners's pos to array
 
     for (int ind_ver = 0; ind_ver < 3; ++ind_ver) {
       float vpos4f_i[4] = {
@@ -261,6 +261,7 @@ void MyRender::Draw(PipelineStateObject a_state, Geom a_geom)
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
       worldViewProj[i * 4 + j] = 0.f;
+      
       for (int k = 0; k < 4; k++) {
         worldViewProj[i * 4 + j] += a_state.projMatrix[i * 4 + k] * a_state.worldViewMatrix[k * 4 + j];
       }

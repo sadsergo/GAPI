@@ -13,6 +13,18 @@ enum
     Unknown = 0,
 };
 
+std::vector<Vec<4, float>> intersect(const std::vector<Vec<4, float>>&, const std::vector<Vec<4, float>>&);
+int orient(Vec<4, float> triangle[3]);
+int areaSign(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
+char SegSegInt(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&, Vec<4, float>&);
+char ParallelInt(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&, Vec<4, float>&);
+void Assigndi(Vec<4, float>&, const Vec<4, float>&);
+bool Between(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
+bool Collinear(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
+int InOut(const Vec<4, float>&, const int&, const int&, const int&);
+int Advance(int, int *, int, bool, const Vec<4, float>&);
+
+
 class VBHB_NODE
 {
 private:
@@ -35,7 +47,7 @@ class VBHB
 {
 private:
     VBHB_NODE* node;
-    VBHB_NODE* right_node, left_node;
+    VBHB *right_node, *left_node;
 
 public:
     VBHB()
@@ -53,7 +65,6 @@ public:
     {
         std::vector<Vec<4, float>> p;
         
-
         if (node->left_node == nullptr && node->right_node == nullptr) {
             if (intersect(triangle, node->node->P).size() == 0) {
                 return node->node->P;
@@ -67,8 +78,13 @@ public:
             return p;
         }
 
-        return traverse(triangle, node->left_node);
-        return traverse(triangle, node->right_node);
+        std::vector<Vec<4, float>> Left = traverse(triangle, node->left_node);
+        std::vector<Vec<4, float>> Right = traverse(triangle, node->right_node);
+
+        std::vector<Vec<4, float>> ans(Left.begin(), Left.end());
+        ans.insert(Left.end(), Right.begin(), Right.end());
+
+        return ans;
     }
 
     bool 
@@ -86,18 +102,3 @@ public:
         return 0;
     }
 };
-
-/*
-open_swr
-*/
-
-int orient(Vec<4, float> triangle[3]);
-std::vector<Vec<4, float>> intersect(const std::vector<Vec<4, float>>&, const std::vector<Vec<4, float>>&);
-int areaSign(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
-char SegSegInt(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&, Vec<4, float>&);
-char ParallelInt(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&, Vec<4, float>&);
-void Assigndi(Vec<4, float>&, const Vec<4, float>&);
-bool Between(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
-bool Collinear(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
-int InOut(const Vec<4, float>&, const int&, const int&, const int&);
-int Advance(int, int *, int, bool, const Vec<4, float>&);
