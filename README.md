@@ -9,11 +9,13 @@
 5. Блочный алгоритм растеризации
 6. Освещение (изображение 9) -->
 
-mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release (or Debug) -DUSE_OPENGL=OFF ..
-make -j 8
+## How to build project
 
-To view not black pictures of scenes need to write:
-cd ./build && make -j 8 && cd .. && ./build/testapp
+* mkdir build && cd build
+* cmake -DCMAKE_BUILD_TYPE=Release (or Debug) -DUSE_OPENGL=OFF ..
+* make -j 8
 
-ENJJOOOOY
+## To view not black pictures of scenes need to write:
+* cd ./build && make -j 8 && cd .. && ./build/testapp
+
+## ENJJOOOOY
