@@ -150,11 +150,8 @@ SegSegInt(const Vec<4, float>& a, const Vec<4, float>& b, const Vec<4, float>& c
 }
 
 int 
-InOut(const Vec<4, float>& tp, const int& inflag, const int& aHB, const int& bHA)
+InOut(const int& inflag, const int& aHB, const int& bHA)
 {
-  // LineTo_d(p);
-  tp.show();
-
   if (aHB > 0) {
     return Pin;
   }
@@ -166,11 +163,10 @@ InOut(const Vec<4, float>& tp, const int& inflag, const int& aHB, const int& bHA
 }
 
 int 
-Advance(int a, int *aa, int n, bool inside, const Vec<4, float>& v)
+Advance(int a, int *aa, int n, bool inside, std::vector<Vec<4, float>>& pol, const Vec<4, float>& v)
 {
   if (inside) {
-    // LineTo_i(v);
-    v.show();
+    pol.push_back(v);
   }
 
   (*aa)++;
@@ -215,52 +211,50 @@ intersect(const std::vector<Vec<4, float>>& P, const std::vector<Vec<4, float>>&
         p0[X] = p[X];
         p0[Y] = p[Y];
 
-        // MoveTo_d(p0);
-        p0.show();
+        res.push_back(p0);
       }
 
-      inflag = InOut(p, inflag, aHB, bHA);
+      inflag = InOut(inflag, aHB, bHA);
+      
+      if (std::find(res.begin(), res.end(), p) == res.end()) {
+        res.push_back(p);
+      }
     }
 
     if ((code == 'e') && dot(A, B) < 0) {
-      // PrintSharedSeg(p, q);
-      // p.show();
-      exit(EXIT_SUCCESS);
+      return res;
     }
 
     if ((cross == 0) && (aHB < 0) && (bHA < 0)) {
-      std::cout << "P and Q are disjoint" << std::endl;
-      exit(EXIT_SUCCESS);
+      return res;
     }
     else if ((cross == 0) && (aHB == 0) && (bHA == 0)) {
       if (inflag == Pin) {
-        b = Advance(b, &ba, m, inflag == Qin, Q[b]);
+        b = Advance(b, &ba, m, inflag == Qin, res, Q[b]);
       }
       else {
-        a = Advance(a, &aa, n, inflag == Pin, P[a]);
+        a = Advance(a, &aa, n, inflag == Pin, res, P[a]);
       }
     }
     else if (cross >= 0) {
       if (bHA > 0) {
-        a = Advance(a, &aa, n, inflag == Pin, P[a]);
+        a = Advance(a, &aa, n, inflag == Pin, res, P[a]);
       }
       else {
-        b = Advance(b, &ba, m, inflag == Qin, Q[b]);
+        b = Advance(b, &ba, m, inflag == Qin, res, Q[b]);
       }
     }
     else {
       if (aHB > 0) {
-        b = Advance(b, &ba, m, inflag == Qin, Q[b]);
+        b = Advance(b, &ba, m, inflag == Qin, res, Q[b]);
       }
       else {
-        a = Advance(a, &aa, n, inflag == Pin, P[a]);
+        a = Advance(a, &aa, n, inflag == Pin, res, P[a]);
       }
     }
   } while (((aa < n) || (ba < m)) && (aa < 2 * n) && (ba < 2 * m));
 
   if (!FirstPoint) {
-    // LineTo(p0);
-    p0.show();
   }
 
   if (inflag == Unknown) {

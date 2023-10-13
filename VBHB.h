@@ -21,8 +21,8 @@ char ParallelInt(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>
 void Assigndi(Vec<4, float>&, const Vec<4, float>&);
 bool Between(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
 bool Collinear(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
-int InOut(const Vec<4, float>&, const int&, const int&, const int&);
-int Advance(int, int *, int, bool, const Vec<4, float>&);
+int InOut(const int&, const int&, const int&);
+int Advance(int, int *, int, bool, std::vector<Vec<4, float>>&, const Vec<4, float>&);
 
 
 class VBHB_NODE
@@ -31,9 +31,13 @@ private:
     std::vector<Vec<4, float>> P;
     std::vector<Vec<4, float>> bounding_box;
     bool is_root;
+    int64_t label;
+    int64_t triangle_ind;
+    int64_t color_ind;
 
 public:
-    VBHB_NODE(bool is_root_node) : is_root(is_root_node) {}
+    VBHB_NODE(bool is_root_node, int64_t label_inp = 0, int64_t triangle_ind_inp = 0, int64_t color_ind_inp = 0) : 
+        is_root(is_root_node), label(label_inp), triangle_ind(triangle_ind_inp), color_ind(color_ind_inp) {}
     ~VBHB_NODE()
     {
         P.clear();
@@ -45,10 +49,12 @@ public:
 
 class VBHB 
 {
+
+friend VBHB_NODE;
+
 private:
     VBHB_NODE* node;
     VBHB *right_node, *left_node;
-
 public:
     VBHB()
     {
@@ -87,18 +93,10 @@ public:
         return ans;
     }
 
-    bool 
-    SAT(Vec<4, float> triangle[3], std::vector<Vec<4, float>>& polygon)
+    void 
+    init_start_pos(const std::vector<Vec<4, float>>& points) 
     {
-        Vec<4, float> AB = triangle[0] - triangle[1], BC = triangle[1] - triangle[2], CA = triangle[2] - triangle[0];
-        float AB_size_2 = dot(AB, AB), BC_size_2 = dot(BC, BC), CA_size_2 = dot(CA, CA);
-        
-        Vec<4, float> norm1 = AB - CA * (dot(AB, CA) / dot(CA, CA)), 
-                      norm2 = BC - AB * (dot(BC, AB) / dot(AB, AB)),
-                      norm3 = CA - BC * (dot(CA, BC) / dot(BC, BC));
-
-        
-
-        return 0;
+        std::copy(points.begin(), points.end(), std::back_inserter(this->node->P));
+        std::copy(points.begin(), points.end(), std::back_inserter(this->node->bounding_box));
     }
 };

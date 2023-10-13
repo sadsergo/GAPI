@@ -15,7 +15,7 @@ template<int P, typename T>
 class Vec 
 {
 private:
-  size_t len = 0;
+  int len = 0;
   T *coords = nullptr;
 public:
   Vec(T *coords) : len(P)
@@ -68,6 +68,20 @@ public:
   operator[] (size_t ind) const
   {
     return coords[ind];
+  }
+
+  bool
+  operator==(const Vec<P, T>& obj)
+  {
+    bool is_true = true;
+
+    for (int i = 0; is_true && i < P; ++i) {
+      if (this->coords[i] != obj[i]) {
+        is_true = false;
+      }
+    }
+
+    return is_true;
   }
 
   Vec<P, T>&
@@ -145,7 +159,7 @@ public:
   void
   show() const
   {
-    for (int i = 0 ; i < len; i++) {
+    for (int i = 0; i < len; i++) {
       std::cout << coords[i] << " ";
     }
 

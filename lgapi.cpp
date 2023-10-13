@@ -222,7 +222,11 @@ MyRender::pixel_rasterisation(const Vec2& A, const Vec2& B, const Vec2& C, const
 void MyRender::Vec_Draw(PipelineStateObject a_state, Geom a_geom)
 {
   Mat<4, float> projMat(a_state.projMatrix);                      //  Create perspective proj mtrx
-  VBHB* tree = new VBHB;                                                     //  Init VBHB tree
+  VBHB* tree = new VBHB;
+  float A1[4] = {1, 1, 0, 0}, A2[4] = {1, -1, 0, 0}, A3[4] = {-1, -1, 0, 0}, A4[4] = {-1, 1, 0, 0};
+  std::vector<Vec<4, float>> start_points = {A1, A2, A3, A4};
+  
+  tree->init_start_pos(start_points);                              // Set rectangle as start surface and bounding box                                                   
 
   for (unsigned int tr_num = 0; tr_num < a_geom.primsNum; tr_num++) {   //  Loop over everyone triangle
     unsigned vert_indx[3] = {                                           //  Take indx of 3 corners
