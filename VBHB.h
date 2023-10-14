@@ -66,28 +66,30 @@ public:
 
     void insert(float triange[3], std::vector<Vec<4, float>>& P);
     
-    static std::vector<Vec<4, float>> 
+    static std::vector<std::vector<Vec<4, float>>> 
     traverse(std::vector<Vec<4, float>> triangle, VBHB* node)
     {
         std::vector<Vec<4, float>> p;
-        
+        std::vector<std::vector<Vec<4, float>>> res;
+
         if (node->left_node == nullptr && node->right_node == nullptr) {
-            if (intersect(triangle, node->node->P).size() == 0) {
-                return node->node->P;
+            p = intersect(triangle, node->node->P);
+            
+            if (p.size() != 0) {
+                res.push_back(p);
             }
-            else {
-                return p;
-            }
+
+            return res;
         }
 
         if (intersect(triangle, node->node->bounding_box).size() == 0) {
-            return p;
+            return res;
         }
 
-        std::vector<Vec<4, float>> Left = traverse(triangle, node->left_node);
-        std::vector<Vec<4, float>> Right = traverse(triangle, node->right_node);
+        std::vector<std::vector<Vec<4, float>>> Left = traverse(triangle, node->left_node);
+        std::vector<std::vector<Vec<4, float>>> Right = traverse(triangle, node->right_node);
 
-        std::vector<Vec<4, float>> ans(Left.begin(), Left.end());
+        std::vector<std::vector<Vec<4, float>>> ans(Left.begin(), Left.end());
         ans.insert(Left.end(), Right.begin(), Right.end());
 
         return ans;

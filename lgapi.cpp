@@ -224,7 +224,7 @@ void MyRender::Vec_Draw(PipelineStateObject a_state, Geom a_geom)
   Mat<4, float> projMat(a_state.projMatrix);                      //  Create perspective proj mtrx
   VBHB* tree = new VBHB;
   float A1[4] = {1, 1, 0, 0}, A2[4] = {1, -1, 0, 0}, A3[4] = {-1, -1, 0, 0}, A4[4] = {-1, 1, 0, 0};
-  std::vector<Vec<4, float>> start_points = {A1, A2, A3, A4};
+  std::vector<Vec<4, float>> start_points = {A4, A3, A2, A1};
   
   tree->init_start_pos(start_points);                              // Set rectangle as start surface and bounding box                                                   
 
@@ -253,8 +253,15 @@ void MyRender::Vec_Draw(PipelineStateObject a_state, Geom a_geom)
       triangle[ind_ver][2] /= triangle[ind_ver][3];
     }
 
-    std::vector<Vec<4, float>> p = VBHB::traverse(triangle, tree);  //  Collect all intersected polygons
+    std::vector<std::vector<Vec<4, float>>> p = VBHB::traverse(triangle, tree);  //  Collect all intersected polygons
     
+    for (auto pol: p) {
+      for (auto el: pol) {
+        el.show();
+      }
+      std::cout << std::endl;
+    }
+
   }
 }
 

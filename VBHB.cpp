@@ -258,7 +258,54 @@ intersect(const std::vector<Vec<4, float>>& P, const std::vector<Vec<4, float>>&
   }
 
   if (inflag == Unknown) {
-    //  Do not cross
+    bool is_inside = false;
+
+    //  Check if first polygon is inside a second polygon
+    Vec<4, float> Q2, Q1;
+    int cnt = 0;
+
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < m; ++j) {
+        int ind2 = (j + m - 1) % m;
+        
+        Q2 = Q[j];
+        Q1 = Q[ind2];
+        
+        if ((P[i][Y] < Q1[Y]) != (P[i][Y] < Q2[Y]) && (P[i][X] < Q1[X] + ((P[i][Y] - Q1[Y]) / (Q2[Y] - Q1[Y]) * (Q2[X] - Q1[X])))) {
+          ++cnt;
+        }
+      }
+    }
+
+    is_inside = cnt % 2;
+    cnt = 0;
+
+    if (is_inside) {
+      return P;
+    }
+
+    // inverse situation
+
+    for (int i = 0; !is_inside && i < m; ++i) {
+      for (int j = 0; !is_inside && j < n; ++j) {
+        int ind2 = (j + n - 1) % n;
+        
+        Q2 = P[j];
+        Q1 = P[ind2];
+        
+        if ((Q[i][Y] < Q1[Y]) != (Q[i][Y] < Q2[Y]) && (Q[i][X] < Q1[X] + ((Q[i][Y] - Q1[Y]) / (Q2[Y] - Q1[Y]) * (Q2[X] - Q1[X])))) {
+          ++cnt;
+        }
+      }
+    }
+
+    if (!is_inside) {
+      is_inside = cnt % 2;
+    }
+
+    if (is_inside) {
+      return Q;
+    }
   }
 
   return res;
