@@ -7,9 +7,9 @@
 #include <algorithm>
 #include <cstring>
 
-#include "VBHB.h"
-#include "Vec.h"
-#include "Mat.h"
+#include "./structs/VBHB.h"
+#include "./structs/Vec.h"
+#include "./structs/Mat.h"
 
 using namespace std;
 

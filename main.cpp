@@ -12,14 +12,14 @@
 // #include <X11/Xutil.h>
 // #include <X11/Xos.h>
 
-#include "Bitmap.h"
-#include "lgapi.h"
-#include "scene.h"
-#include "shader.h"
-#include "OBJparsing.h"
-#include "VBHB.h"
-#include "Vec.h"
-#include "Mat.h"
+#include "./load_img/Bitmap.h"
+#include "./pipeline/lgapi.h"
+#include "./scene/scene.h"
+#include "./shaders/shader.h"
+#include "./parse_obj/OBJparsing.h"
+#include "./structs/VBHB.h"
+#include "./structs/Vec.h"
+#include "./structs/Mat.h"
 
 // Display *dis;
 // int default_screen;
@@ -474,8 +474,9 @@ int main(int argc, const char** argv)
     float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
     std::cout << "test_10: " << time << " ms" << std::endl;
 
-    std::string name = imgName + "10.bmp";  
-    SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    std::string name = imgName + "10.bmp";
+    std::string savePath = "./output/" + name;
+    SaveBMP(savePath.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
     std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
 
     

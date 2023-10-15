@@ -4,8 +4,8 @@
 #include <cstddef>
 #include <iostream>
 #include <cmath>
-#include "Vec.h"
-#include "Mat.h"
+#include "./structs/Vec.h"
+#include "./structs/Mat.h"
 
 enum RENDER_MODE { MODE_VERT_COLOR = 0,
                    MODE_TEXURE_3D  = 1, };

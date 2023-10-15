@@ -25,17 +25,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 if(USE_OPENGL)
 add_executable(testapp main.cpp 
-                       Bitmap.cpp
-                       lgapi_ref.cpp
-                       scene.cpp)
+                       ./load_img/Bitmap.cpp
+                       ./openGL_ref/lgapi_ref.cpp
+                       ./scene/scene.cpp)
 else()
 add_executable(testapp main.cpp 
-                       Bitmap.cpp
-                       lgapi.cpp
-                       scene.cpp
-                       VBHB.cpp
-                       Vec.cpp
-                       Mat.cpp
+                       ./load_img/Bitmap.cpp
+                       ./pipeline/lgapi.cpp
+                       ./scene/scene.cpp
+                       ./structs/VBHB.cpp
+                       ./structs/Vec.cpp
+                       ./structs/Mat.cpp
                        )
 endif()
 

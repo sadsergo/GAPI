@@ -1,5 +1,5 @@
 #include "scene.h"
-#include "Bitmap.h"
+#include "./load_img/Bitmap.h"
 #include <cstring>
 #include <fstream>
 
