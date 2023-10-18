@@ -310,3 +310,143 @@ intersect(const std::vector<Vec<4, float>>& P, const std::vector<Vec<4, float>>&
 
   return res;
 }
+
+bool 
+SAT(const std::vector<Vec<4, float>>& P, const std::vector<Vec<4, float>>& Q)
+{
+  std::vector<Vec<4, float>> res;
+  int a = 0, b = 0, a1 = 0, b1 = 0;
+  Vec<4, float> A, B;
+  int cross = 0, bHA = 0, aHB = 0;
+  //* Origin = {0, 0, 0, 0}
+  Vec<4, float> Origin;
+  Vec<4, float> p, q;
+  int inflag = Unknown, aa = 0, ba = 0;
+  bool FirstPoint = true;
+  Vec<4, float> p0;
+  int code = 0;
+  int64_t n = P.size(), m = Q.size();
+
+  do {
+    a1 = (a + n - 1) % n;
+    b1 = (b + m - 1) % m;
+
+    A = P[a] - P[a1];
+    B = Q[b] - Q[b1];
+
+    cross = areaSign(Origin, A, B);
+    aHB = areaSign(Q[b1], Q[b], P[a]);
+    bHA = areaSign(P[a1], P[a], Q[b]);
+
+    code = SegSegInt(P[a1], P[a], Q[b1], Q[b], p);
+
+    if (code == '1' || code == 'v') {
+      if (inflag == Unknown && FirstPoint) {
+        aa = ba = 0;
+        FirstPoint = false;
+        p0[X] = p[X];
+        p0[Y] = p[Y];
+
+        
+      }
+
+      inflag = InOut(inflag, aHB, bHA);
+      
+      if (std::find(res.begin(), res.end(), p) == res.end()) {
+
+      }
+    }
+
+    if ((code == 'e') && dot(A, B) < 0) {
+
+    }
+
+    if ((cross == 0) && (aHB < 0) && (bHA < 0)) {
+
+    }
+    else if ((cross == 0) && (aHB == 0) && (bHA == 0)) {
+      if (inflag == Pin) {
+        b = Advance(b, &ba, m, inflag == Qin, res, Q[b]);
+      }
+      else {
+        a = Advance(a, &aa, n, inflag == Pin, res, P[a]);
+      }
+    }
+    else if (cross >= 0) {
+      if (bHA > 0) {
+        a = Advance(a, &aa, n, inflag == Pin, res, P[a]);
+      }
+      else {
+        b = Advance(b, &ba, m, inflag == Qin, res, Q[b]);
+      }
+    }
+    else {
+      if (aHB > 0) {
+        b = Advance(b, &ba, m, inflag == Qin, res, Q[b]);
+      }
+      else {
+        a = Advance(a, &aa, n, inflag == Pin, res, P[a]);
+      }
+    }
+  } while (FirstPoint && ((aa < n) || (ba < m)) && (aa < 2 * n) && (ba < 2 * m));
+
+  if (!FirstPoint) {
+  }
+
+  if (!FirstPoint) {
+    return true;
+  }
+
+  if (inflag == Unknown) {
+    bool is_inside = false;
+
+    //  Check if first polygon is inside a second polygon
+    Vec<4, float> Q2, Q1;
+    int cnt = 0;
+
+    for (int i = 0; i < n; ++i) {
+      for (int j = 0; j < m; ++j) {
+        int ind2 = (j + m - 1) % m;
+        
+        Q2 = Q[j];
+        Q1 = Q[ind2];
+        
+        if ((P[i][Y] < Q1[Y]) != (P[i][Y] < Q2[Y]) && (P[i][X] < Q1[X] + ((P[i][Y] - Q1[Y]) / (Q2[Y] - Q1[Y]) * (Q2[X] - Q1[X])))) {
+          ++cnt;
+        }
+      }
+    }
+
+    is_inside = cnt % 2;
+    cnt = 0;
+
+    if (is_inside) {
+      return true;
+    }
+
+    // inverse situation
+
+    for (int i = 0; !is_inside && i < m; ++i) {
+      for (int j = 0; !is_inside && j < n; ++j) {
+        int ind2 = (j + n - 1) % n;
+        
+        Q2 = P[j];
+        Q1 = P[ind2];
+        
+        if ((Q[i][Y] < Q1[Y]) != (Q[i][Y] < Q2[Y]) && (Q[i][X] < Q1[X] + ((Q[i][Y] - Q1[Y]) / (Q2[Y] - Q1[Y]) * (Q2[X] - Q1[X])))) {
+          ++cnt;
+        }
+      }
+    }
+
+    if (!is_inside) {
+      is_inside = cnt % 2;
+    }
+
+    if (is_inside) {
+      return true;
+    }
+  }
+
+  return false;
+}

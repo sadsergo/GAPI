@@ -23,6 +23,7 @@ bool Between(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
 bool Collinear(const Vec<4, float>&, const Vec<4, float>&, const Vec<4, float>&);
 int InOut(const int&, const int&, const int&);
 int Advance(int, int *, int, bool, std::vector<Vec<4, float>>&, const Vec<4, float>&);
+bool SAT(const std::vector<Vec<4, float>>&, const std::vector<Vec<4, float>>&);
 
 
 class VBHB_NODE
@@ -69,20 +70,18 @@ public:
     static std::vector<std::vector<Vec<4, float>>> 
     traverse(std::vector<Vec<4, float>> triangle, VBHB* node)
     {
-        std::vector<Vec<4, float>> p;
         std::vector<std::vector<Vec<4, float>>> res;
 
         if (node->left_node == nullptr && node->right_node == nullptr) {
-            p = intersect(triangle, node->node->P);
             
-            if (p.size() != 0) {
-                res.push_back(p);
+            if (SAT(triangle, node->node->P)) {
+                res.push_back(node->node->P);
             }
 
             return res;
         }
 
-        if (intersect(triangle, node->node->bounding_box).size() == 0) {
+        if (!SAT(triangle, node->node->bounding_box)) {
             return res;
         }
 

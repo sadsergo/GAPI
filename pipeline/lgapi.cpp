@@ -11,10 +11,6 @@
 #include "./structs/Vec.h"
 #include "./structs/Mat.h"
 
-using namespace std;
-
-
-
 Vec2 operator - (const Vec2 &a, const Vec2 &B) 
 {
   Vec2 res(a);
@@ -253,15 +249,17 @@ void MyRender::Vec_Draw(PipelineStateObject a_state, Geom a_geom)
       triangle[ind_ver][2] /= triangle[ind_ver][3];
     }
 
-    std::vector<std::vector<Vec<4, float>>> p = VBHB::traverse(triangle, tree);  //  Collect all intersected polygons
-    
-    for (auto pol: p) {
-      for (auto el: pol) {
+    std::vector<std::vector<Vec<4, float>>> intersected_polygons = VBHB::traverse(triangle, tree);  //  Collect all intersected polygons
+
+    for (auto polygon: intersected_polygons) {
+      std::vector<Vec<4, float>> p = intersect(triangle, polygon);
+
+      for (auto el: p) {
         el.show();
       }
+
       std::cout << std::endl;
     }
-
   }
 }
 
