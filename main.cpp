@@ -5,8 +5,9 @@
 #include <cstring>
 #include <cstdint>
 #include <chrono>
-#include<sys/wait.h>
 #include <ctime>
+#include <filesystem>
+#include <direct.h>
 
 // #include <X11/Xlib.h>
 // #include <X11/Xutil.h>
@@ -97,25 +98,30 @@ uint32_t WIN_WIDTH  = 1024;
 uint32_t WIN_HEIGHT = 1024;
 
 int main(int argc, const char** argv)
-{
-  std::vector<uint32_t> pixelData(WIN_WIDTH*WIN_HEIGHT);
-  Image2D fb(WIN_WIDTH, WIN_HEIGHT, pixelData.data());
-  size_t img_size = WIN_HEIGHT * WIN_WIDTH;
+{   
+    std::vector<uint32_t> pixelData(WIN_WIDTH*WIN_HEIGHT);
+    Image2D fb(WIN_WIDTH, WIN_HEIGHT, pixelData.data());
+    size_t img_size = WIN_HEIGHT * WIN_WIDTH;
   
-  #ifdef USE_OPENGL
-  std::shared_ptr<IRender> pRender = MakeReferenceImpl();
-  std::string imgName = "wref_";
-  #else
-  std::shared_ptr<IRender> pRender = MakeMyImpl();
-  std::string imgName = "zout_";
-  #endif
+    #ifdef USE_OPENGL
+    std::shared_ptr<IRender> pRender = MakeReferenceImpl();
+    std::string imgName = "wref_";
+    #else
+    std::shared_ptr<IRender> pRender = MakeMyImpl();
+    std::string imgName = "zout_";
+    #endif
 
-  ShaderContainer *shader_container = new ShaderContainer();
+    ShaderContainer *shader_container = new ShaderContainer();
   
-  uint32_t testTexId, mosaicTexId, bricksTexId, terrainTex, statue1;
+    uint32_t testTexId, mosaicTexId, bricksTexId, terrainTex, statue1;
 
     int w, h;
     std::vector<unsigned> pixels;
+    
+    //  Only for Visual Studio Windows (just for now)
+    if (_chdir("../../../")) {
+        std::cout << "Couldn't change directory" << std::endl;
+    }
 
     pixels      = LoadBMP("./data/texture1.bmp", &w, &h);
     Image2D A = Image2D(w,h,pixels.data());
@@ -137,274 +143,274 @@ int main(int argc, const char** argv)
     Image2D E = Image2D(w,h,pixels4.data());
     statue1 = pRender->AddImage(E);
 
-  // // test #01
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorShader;
-  //   shader_container->textureShader = textureShader;
-  //   auto objects = scn01_colored_triangle(); 
-  //   auto before  = std::chrono::high_resolution_clock::now();  
+    // // test #01
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorShader;
+    //   shader_container->textureShader = textureShader;
+    //   auto objects = scn01_colored_triangle(); 
+    //   auto before  = std::chrono::high_resolution_clock::now();  
 
-  //   pRender->BeginRenderPass(fb);
-  //   for(const auto& obj : objects)
-  //     DrawInstances(obj, pRender, MODE_VERT_COLOR, shader_container, 0);
-  //   pRender->EndRenderPass(fb);
+    //   pRender->BeginRenderPass(fb);
+    //   for(const auto& obj : objects)
+    //     DrawInstances(obj, pRender, MODE_VERT_COLOR, shader_container, 0);
+    //   pRender->EndRenderPass(fb);
 
 
-  //   std::string name = imgName + "01" + ".bmp";  
-  //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    //   std::string name = imgName + "01" + ".bmp";  
+    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
 
-  //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
 
-  //   float time = (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f) / 10;
-  //   std::cout << "test_01: " << time << " ms" << std::endl;
-  // }
+    //   float time = (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f) / 10;
+    //   std::cout << "test_01: " << time << " ms" << std::endl;
+    // }
 
-  // // test #02
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorShader;
-  //   shader_container->textureShader = textureShader;
-  //   auto objects = scn02_tri_and_quad();
-  //   auto before  = std::chrono::high_resolution_clock::now();
+    // // test #02
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorShader;
+    //   shader_container->textureShader = textureShader;
+    //   auto objects = scn02_tri_and_quad();
+    //   auto before  = std::chrono::high_resolution_clock::now();
     
-  //   pRender->BeginRenderPass(fb);
-  //   for(const auto& obj : objects)
-  //     DrawInstances(obj, pRender, MODE_VERT_COLOR, shader_container);
-  //   pRender->EndRenderPass(fb);
+    //   pRender->BeginRenderPass(fb);
+    //   for(const auto& obj : objects)
+    //     DrawInstances(obj, pRender, MODE_VERT_COLOR, shader_container);
+    //   pRender->EndRenderPass(fb);
 
-  //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-  //   std::cout << "test_02: " << time << " ms" << std::endl;
+    //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+    //   std::cout << "test_02: " << time << " ms" << std::endl;
 
-  //   std::string name = imgName + "02.bmp";  
-  //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    //   std::string name = imgName + "02.bmp";  
+    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
 
-  //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-  // }
+    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    // }
 
-  // // test #03
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorShader;
-  //   shader_container->textureShader = textureShader;
-  //   auto objects = scn03_pyr_and_cube();
-  //   auto before  = std::chrono::high_resolution_clock::now();
+    // // test #03
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorShader;
+    //   shader_container->textureShader = textureShader;
+    //   auto objects = scn03_pyr_and_cube();
+    //   auto before  = std::chrono::high_resolution_clock::now();
     
-  //   pRender->BeginRenderPass(fb);
-  //   for(const auto& obj : objects)
-  //     DrawInstances(obj, pRender, MODE_VERT_COLOR, shader_container);
-  //   pRender->EndRenderPass(fb);
+    //   pRender->BeginRenderPass(fb);
+    //   for(const auto& obj : objects)
+    //     DrawInstances(obj, pRender, MODE_VERT_COLOR, shader_container);
+    //   pRender->EndRenderPass(fb);
 
-  //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-  //   std::cout << "test_03: " << time << " ms" << std::endl;
+    //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+    //   std::cout << "test_03: " << time << " ms" << std::endl;
 
-  //   std::string name = imgName + "03.bmp";  
-  //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    //   std::string name = imgName + "03.bmp";  
+    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
 
-  //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-  // }
+    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    // }
 
-  // // test #04
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorShader;
-  //   shader_container->textureShader = textureShader;
-  //   auto objects = scn04_cube(testTexId);
-  //   auto before  = std::chrono::high_resolution_clock::now();
+    // // test #04
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorShader;
+    //   shader_container->textureShader = textureShader;
+    //   auto objects = scn04_cube(testTexId);
+    //   auto before  = std::chrono::high_resolution_clock::now();
     
-  //   pRender->BeginRenderPass(fb);
-  //   for(const auto& obj : objects)
-  //     DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
-  //   pRender->EndRenderPass(fb);
+    //   pRender->BeginRenderPass(fb);
+    //   for(const auto& obj : objects)
+    //     DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
+    //   pRender->EndRenderPass(fb);
 
-  //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-  //   std::cout << "test_04: " << time << " ms" << std::endl;
+    //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+    //   std::cout << "test_04: " << time << " ms" << std::endl;
 
-  //   std::string name = imgName + "04.bmp";  
-  //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    //   std::string name = imgName + "04.bmp";  
+    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
 
-  //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-  // }
+    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    // }
 
-  // // test #05
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorShader;
-  //   shader_container->textureShader = textureShader;
-  //   init();
-  //   XEvent event;
-  //   KeySym key;
-  //   char text[255];
-  //   auto objects = scn05_cubes_many(testTexId, mosaicTexId, bricksTexId);
+    // // test #05
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorShader;
+    //   shader_container->textureShader = textureShader;
+    //   init();
+    //   XEvent event;
+    //   KeySym key;
+    //   char text[255];
+    //   auto objects = scn05_cubes_many(testTexId, mosaicTexId, bricksTexId);
 
-  //   char *data = new char [4 * fb.width * fb.height];
-  //   float angle = M_PI / 1000;
-  //   int i = 0;
+    //   char *data = new char [4 * fb.width * fb.height];
+    //   float angle = M_PI / 1000;
+    //   int i = 0;
 
-  //   pRender->BeginRenderPass(fb);
+    //   pRender->BeginRenderPass(fb);
 
-  //   if (!fork()) {
-  //     int fps = 0, count = 0;
-  //     auto before  = std::chrono::high_resolution_clock::now();
-  //     while (1) {
-  //       if (XPending(dis)) {
-  //         XNextEvent(dis, &event);
+    //   if (!fork()) {
+    //     int fps = 0, count = 0;
+    //     auto before  = std::chrono::high_resolution_clock::now();
+    //     while (1) {
+    //       if (XPending(dis)) {
+    //         XNextEvent(dis, &event);
 
-  //         if (event.type == KeyPress && XLookupString(&event.xkey, text, 255, &key, 0) == 1) {
-  //           if (text[0] == 'q') {
-  //             close();
-  //           }
-  //         }
-  //       }
+    //         if (event.type == KeyPress && XLookupString(&event.xkey, text, 255, &key, 0) == 1) {
+    //           if (text[0] == 'q') {
+    //             close();
+    //           }
+    //         }
+    //       }
         
-  //       for(const auto& obj : objects)
-  //         DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container, angle * i);
-  //       pRender->EndRenderPass(fb);
+    //       for(const auto& obj : objects)
+    //         DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container, angle * i);
+    //       pRender->EndRenderPass(fb);
 
-  //       for (int i = 0; i < fb.height; ++i) {
-  //         for (int j = 0; j < fb.width; ++j) {
-  //           unsigned int color = fb.data[fb.width * i + j];
+    //       for (int i = 0; i < fb.height; ++i) {
+    //         for (int j = 0; j < fb.width; ++j) {
+    //           unsigned int color = fb.data[fb.width * i + j];
 
-  //           data[4 * (fb.width * (fb.height - i) + j) + 0] = (color & 0x00FF0000) >> 16;
-  //           data[4 * (fb.width * (fb.height - i) + j) + 1] = (color & 0x0000FF00) >> 8;
-  //           data[4 * (fb.width * (fb.height - i) + j) + 2] = (color & 0x000000FF);
-  //           data[4 * (fb.width * (fb.height - i) + j) + 3] = 0;
-  //         }
-  //       }
+    //           data[4 * (fb.width * (fb.height - i) + j) + 0] = (color & 0x00FF0000) >> 16;
+    //           data[4 * (fb.width * (fb.height - i) + j) + 1] = (color & 0x0000FF00) >> 8;
+    //           data[4 * (fb.width * (fb.height - i) + j) + 2] = (color & 0x000000FF);
+    //           data[4 * (fb.width * (fb.height - i) + j) + 3] = 0;
+    //         }
+    //       }
         
-  //       std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-  //       XImage *ximage = XCreateImage(dis, vis, default_depth, ZPixmap, 24, data, fb.width, fb.height, 32, 0);
-  //       XPutImage(dis, win, gc, ximage, 0, 0, 0, 0, fb.width, fb.height);
+    //       std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    //       XImage *ximage = XCreateImage(dis, vis, default_depth, ZPixmap, 24, data, fb.width, fb.height, 32, 0);
+    //       XPutImage(dis, win, gc, ximage, 0, 0, 0, 0, fb.width, fb.height);
 
-  //       i = (i + 1) % 1000;
+    //       i = (i + 1) % 1000;
 
-  //       float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-  //       if (time > 1000) {
-  //         std::cout << "FPS: " << count << std::endl;
-  //         count = 0;
-  //         before = std::chrono::high_resolution_clock::now();
-  //       }
-  //       else {
-  //         count++;
-  //       }
-  //     }
+    //       float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+    //       if (time > 1000) {
+    //         std::cout << "FPS: " << count << std::endl;
+    //         count = 0;
+    //         before = std::chrono::high_resolution_clock::now();
+    //       }
+    //       else {
+    //         count++;
+    //       }
+    //     }
 
-  //     delete [] data;
-  //   }
+    //     delete [] data;
+    //   }
 
-  //   wait(NULL);
-  // }
+    //   wait(NULL);
+    // }
 
-  // // test #06
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorShader;
-  //   shader_container->textureShader = textureShader;
-  //   auto objects = scn06_teapot(testTexId, mosaicTexId);
-  //   auto before  = std::chrono::high_resolution_clock::now();
+    // // test #06
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorShader;
+    //   shader_container->textureShader = textureShader;
+    //   auto objects = scn06_teapot(testTexId, mosaicTexId);
+    //   auto before  = std::chrono::high_resolution_clock::now();
     
-  //   pRender->BeginRenderPass(fb);
-  //   for(const auto& obj : objects)
-  //     DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
-  //   pRender->EndRenderPass(fb);
+    //   pRender->BeginRenderPass(fb);
+    //   for(const auto& obj : objects)
+    //     DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
+    //   pRender->EndRenderPass(fb);
 
-  //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-  //   std::cout << "test_06: " << time << " ms" << std::endl;
+    //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+    //   std::cout << "test_06: " << time << " ms" << std::endl;
 
-  //   std::string name = imgName + "06.bmp";  
-  //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    //   std::string name = imgName + "06.bmp";  
+    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
     
-  //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-  // }
+    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    // }
 
-  // // test #07
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorShader;
-  //   shader_container->textureShader = textureShader;
-  //   auto objects = scn07_teapots_many(testTexId, mosaicTexId);
-  //   auto before  = std::chrono::high_resolution_clock::now();
+    // // test #07
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorShader;
+    //   shader_container->textureShader = textureShader;
+    //   auto objects = scn07_teapots_many(testTexId, mosaicTexId);
+    //   auto before  = std::chrono::high_resolution_clock::now();
     
-  //   pRender->BeginRenderPass(fb);
-  //   for(const auto& obj : objects)
-  //     DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
-  //   pRender->EndRenderPass(fb);
+    //   pRender->BeginRenderPass(fb);
+    //   for(const auto& obj : objects)
+    //     DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
+    //   pRender->EndRenderPass(fb);
 
-  //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-  //   std::cout << "test_07: " << time << " ms" << std::endl;
+    //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+    //   std::cout << "test_07: " << time << " ms" << std::endl;
 
-  //   std::string name = imgName + "07.bmp";  
-  //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    //   std::string name = imgName + "07.bmp";  
+    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
 
-  //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-  // }
+    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    // }
 
-  // // test #08
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorShader;
-  //   shader_container->textureShader = textureShader;
-  //   auto objects = scn08_terrain(terrainTex);
-  //   auto before  = std::chrono::high_resolution_clock::now();
+    // // test #08
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorShader;
+    //   shader_container->textureShader = textureShader;
+    //   auto objects = scn08_terrain(terrainTex);
+    //   auto before  = std::chrono::high_resolution_clock::now();
     
-  //   pRender->BeginRenderPass(fb);
-  //   for(const auto& obj : objects)
-  //     DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
-  //   pRender->EndRenderPass(fb);
+    //   pRender->BeginRenderPass(fb);
+    //   for(const auto& obj : objects)
+    //     DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
+    //   pRender->EndRenderPass(fb);
 
-  //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-  //   std::cout << "test_08: " << time << " ms" << std::endl;
+    //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+    //   std::cout << "test_08: " << time << " ms" << std::endl;
 
-  //   std::string name = imgName + "08.bmp";  
-  //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    //   std::string name = imgName + "08.bmp";  
+    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
 
-  //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-  // }
+    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    // }
 
-  // // test #09
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorCubeLightSourceShader;
-  //   shader_container->textureShader = textureShader;
+    // // test #09
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorCubeLightSourceShader;
+    //   shader_container->textureShader = textureShader;
 
-  //   LightObj Light;
+    //   LightObj Light;
 
-  //   auto objects = scn04_cube(uint32_t(-1));
-  //   auto before  = std::chrono::high_resolution_clock::now();
+    //   auto objects = scn04_cube(uint32_t(-1));
+    //   auto before  = std::chrono::high_resolution_clock::now();
     
-  //   auto LightSourse = objects[0];
-  //   auto Cube = objects[1];
+    //   auto LightSourse = objects[0];
+    //   auto Cube = objects[1];
 
-  //   Light.Color = {255, 255, 255};
+    //   Light.Color = {255, 255, 255};
 
-  //   Light.x = LightSourse.geom.vpos4f[0];
-  //   Light.y = LightSourse.geom.vpos4f[1];
-  //   Light.z = LightSourse.geom.vpos4f[2];
-  //   Light.w = LightSourse.geom.vpos4f[3];
+    //   Light.x = LightSourse.geom.vpos4f[0];
+    //   Light.y = LightSourse.geom.vpos4f[1];
+    //   Light.z = LightSourse.geom.vpos4f[2];
+    //   Light.w = LightSourse.geom.vpos4f[3];
 
-  //   pRender->BeginRenderPass(fb, &Light);
+    //   pRender->BeginRenderPass(fb, &Light);
 
-  //   DrawInstances(LightSourse, pRender, MODE_TEXURE_3D, shader_container);
-  //   shader_container->ambientLightShader = nullptr;
-  //   shader_container->colorShader = CubeStartColorShader;
+    //   DrawInstances(LightSourse, pRender, MODE_TEXURE_3D, shader_container);
+    //   shader_container->ambientLightShader = nullptr;
+    //   shader_container->colorShader = CubeStartColorShader;
     
-  //   shader_container->ambientLightShader = ambientLightShader;
-  //   shader_container->diffusalLightShader = diffusalLightShader;
-  //   DrawInstances(Cube, pRender, MODE_TEXURE_3D, shader_container);
+    //   shader_container->ambientLightShader = ambientLightShader;
+    //   shader_container->diffusalLightShader = diffusalLightShader;
+    //   DrawInstances(Cube, pRender, MODE_TEXURE_3D, shader_container);
 
-  //   pRender->EndRenderPass(fb);
+    //   pRender->EndRenderPass(fb);
 
-  //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-  //   std::cout << "test_09: " << time << " ms" << std::endl;
+    //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+    //   std::cout << "test_09: " << time << " ms" << std::endl;
 
-  //   std::string name = imgName + "09.bmp";  
-  //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    //   std::string name = imgName + "09.bmp";  
+    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
 
-  //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-  // }
+    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    // }
 
-  // test #10
-  {
+    // test #10
+    {
     shader_container->vertexShader = vertexShader;
     shader_container->colorShader = colorBarShader;
     shader_container->textureShader = textureShader;
@@ -427,31 +433,31 @@ int main(int argc, const char** argv)
     float pP_T[16];
 
     for (int i = 0; i < 4; ++i) {
-      for (int j = 0; j < 4; ++j) {
+        for (int j = 0; j < 4; ++j) {
         pP_T[4 * j + i] = perspectiveProj[4 * i + j];
-      }
+        }
     }
 
     float model[16] = {
-      1, 0, 0, 0,
-      0, 1, 0, 0,
-      0, 0, 1, 0,
-      0, 0, 0, 1,
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1,
     };
 
     float scale[16] = {
-      2, 0, 0, 0,
-      0, 2, 0, 0,
-      0, 0, 2, 0,
-      0, 0, 0, 1,
+        2, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 2, 0,
+        0, 0, 0, 1,
     };
 
     double angle = 0.f * LiteMath::M_PI / 180.f;
     float rotate[16] = {
-      (float)cos(angle), 0, -(float)sin(angle), 0,
-      0, 1, 0, 0,
-      (float)sin(angle), 0, (float)cos(angle), 0,
-      0, 0, 0, 1
+        (float)cos(angle), 0, -(float)sin(angle), 0,
+        0, 1, 0, 0,
+        (float)sin(angle), 0, (float)cos(angle), 0,
+        0, 0, 0, 1
     };
     
     Mat<4, float> modelMat(model), scaleMat(scale), rotateMat(rotate);
@@ -467,9 +473,9 @@ int main(int argc, const char** argv)
     float vm_T[16];
 
     for (int i = 0; i < 4; ++i) {
-      for (int j = 0; j < 4; ++j) {
+        for (int j = 0; j < 4; ++j) {
         vm_T[4 * j + i] = vM[4 * i + j];
-      }
+        }
     }
 
     // Mat<4, float> viewMat = lookAt(P, target, up);
@@ -496,49 +502,49 @@ int main(int argc, const char** argv)
     std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
     
     for (int i = 0; i < fb.width * fb.height; ++i) {
-      fb.buff[i].first_part.clear();
-      fb.buff[i].second_part.clear();
+        fb.buff[i].first_part.clear();
+        fb.buff[i].second_part.clear();
     } 
 
     delete [] fb.buff;
-  }
+    }
 
-  // // test #11
-  // {
-  //   shader_container->vertexShader = vertexShader;
-  //   shader_container->colorShader = colorBarShader;
-  //   shader_container->textureShader = textureShader;
-  //   shader_container->ambientLightShader = nullptr;
-  //   shader_container->diffusalLightShader = nullptr;
+    // // test #11
+    // {
+    //   shader_container->vertexShader = vertexShader;
+    //   shader_container->colorShader = colorBarShader;
+    //   shader_container->textureShader = textureShader;
+    //   shader_container->ambientLightShader = nullptr;
+    //   shader_container->diffusalLightShader = nullptr;
 
-  //   float proj1[16] = {2.41421, 0, 0, 0, 
-  //                    0, 2.41421, 0, 0, 
-  //                    0, 0, -1.002, -0.2002, 
-  //                    0, 0, -1, 0 };
+    //   float proj1[16] = {2.41421, 0, 0, 0, 
+    //                    0, 2.41421, 0, 0, 
+    //                    0, 0, -1.002, -0.2002, 
+    //                    0, 0, -1, 0 };
 
-  //   float pyr1World[16] = {0.761858, -0.323205, 0.561347, 1.5, 
-  //                         0.561347, 0.761858, -0.323205, 0, 
-  //                         -0.323205, 0.561347, 0.761858, -7, 
-  //                         0, 0, 0, 1 };
+    //   float pyr1World[16] = {0.761858, -0.323205, 0.561347, 1.5, 
+    //                         0.561347, 0.761858, -0.323205, 0, 
+    //                         -0.323205, 0.561347, 0.761858, -7, 
+    //                         0, 0, 0, 1 };
 
-  //   std::string file_name2 = "./data/vv.obj";
-  //   auto objects = ObjParse(file_name2);
-  //   memcpy(objects[0].instances[0].worldViewMatrix, pyr1World, sizeof(pyr1World));
-  //   memcpy(objects[0].instances[0].projMatrix,      proj1, sizeof(proj1));
+    //   std::string file_name2 = "./data/vv.obj";
+    //   auto objects = ObjParse(file_name2);
+    //   memcpy(objects[0].instances[0].worldViewMatrix, pyr1World, sizeof(pyr1World));
+    //   memcpy(objects[0].instances[0].projMatrix,      proj1, sizeof(proj1));
 
-  //   auto before  = std::chrono::high_resolution_clock::now();
+    //   auto before  = std::chrono::high_resolution_clock::now();
     
-  //   pRender->BeginRenderPass(fb);
-  //   DrawInstances(objects[0], pRender, MODE_TEXURE_3D, shader_container);
-  //   pRender->EndRenderPass(fb);
+    //   pRender->BeginRenderPass(fb);
+    //   DrawInstances(objects[0], pRender, MODE_TEXURE_3D, shader_container);
+    //   pRender->EndRenderPass(fb);
 
-  //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-  //   std::cout << "test_11: " << time << " ms" << std::endl;
+    //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+    //   std::cout << "test_11: " << time << " ms" << std::endl;
 
-  //   std::string name = imgName + "11.bmp";  
-  //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
-  //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-  // }
+    //   std::string name = imgName + "11.bmp";  
+    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    // }
 
-  return 0;
+      return 0;
 }
