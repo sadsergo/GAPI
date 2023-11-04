@@ -6,65 +6,13 @@
 #include <cmath>
 #include "./structs/Vec.h"
 #include "./structs/Mat.h"
+#include "SubPixel_buf.h"
 
 enum RENDER_MODE { MODE_VERT_COLOR = 0,
                    MODE_TEXURE_3D  = 1, };
 
 
-struct Vec4 {
-  float x;
-  float y;
-  float z;
-  float w;
-
-  Vec4(float x = 0, float y = 0, float z = 0, float w = 0) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-    this->w = w;
-  }
-};
-
-class Vec2 {
-  float x;
-  float y;
-public:
-  Vec2(float x = 0, float y = 0) 
-  {
-    this->x = x;
-    this->y = y;
-  }
-
-  Vec2(const Vec2 &obj)
-  {
-    this->x = obj.x;
-    this->y = obj.y;
-  }
-
-  Vec2 & operator = (const Vec2 &obj) {
-    this->x = obj.x;
-    this->y = obj.y;
-
-    return *this;
-  }
-
-  float getX() const
-  {
-    return x;
-  }
-
-  float getY() const
-  {
-    return y;
-  }
-
-  friend Vec2 operator - (const Vec2 &a, const Vec2 &B);
-
-  friend float E(const Vec2 &A, const Vec2 &B, const Vec2 &P);
-  friend float E(const Vec2 &V, const Vec2 &VP);
-  friend long long F(const Vec2 &A, const Vec2 &B, const Vec2 &P);
-  friend void RenderPartiallyCoveredBlock(int j, int x, int blockSize, Vec2 A, Vec2 B, Vec2 C);
-};
+const float eps = 0.000001;
 
 struct LightObj {
     float x;
@@ -92,11 +40,15 @@ struct Geom
 struct Image2D
 {
   Image2D(){}
-  Image2D(unsigned int w, unsigned int h, unsigned int* a_data) : data(a_data), width(w), height(h) {}
+  Image2D(unsigned int w, unsigned int h, unsigned int* a_data) : data(a_data), width(w), height(h) 
+  {
+    buff = new SubPixelBuf[w * h];
+  }
 
   unsigned int* data;   ///< access pixel(x,y) as data[y*width+x]
   unsigned int  width;
   unsigned int  height; 
+  SubPixelBuf* buff;
 };
 
 struct TextureContainer {
@@ -142,7 +94,8 @@ struct IRender
   virtual unsigned int AddImage(const Image2D &a_img) = 0;
 
   virtual void BeginRenderPass(Image2D &fb, LightObj *L = 0) = 0;
-  virtual void Draw(PipelineStateObject a_state, Geom a_geom) = 0;
-  virtual void Vec_Draw(PipelineStateObject a_state, Geom a_geom) = 0;
+  // virtual void Draw(PipelineStateObject a_state, Geom a_geom) = 0;
+  // virtual void Vec_Draw(PipelineStateObject a_state, Geom a_geom) = 0;
   virtual void EndRenderPass(Image2D &fb) = 0;
+  virtual void Draw_SubPixel(PipelineStateObject a_state, Geom a_geom) = 0;
 };

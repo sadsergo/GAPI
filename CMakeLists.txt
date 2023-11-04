@@ -36,8 +36,10 @@ add_executable(testapp main.cpp
                        ./structs/VBHB.cpp
                        ./structs/Vec.cpp
                        ./structs/Mat.cpp
+                       SubPixel_buf.cpp
                        )
 endif()
+include_directories(./ external/LiteMath)
 
 set_target_properties(testapp PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 

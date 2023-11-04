@@ -20,6 +20,7 @@
 #include "./structs/VBHB.h"
 #include "./structs/Vec.h"
 #include "./structs/Mat.h"
+#include <LiteMath.h>
 
 // Display *dis;
 // int default_screen;
@@ -88,8 +89,7 @@ void DrawInstances(const SimpleScene& scn, std::shared_ptr<IRender> pRender, REN
       pso.imgId = scn.textures[instId];  
     else
       pso.imgId = uint32_t(-1);          
-    // pRender->Draw(pso, geom);
-    pRender->Vec_Draw(pso, geom);
+    pRender->Draw_SubPixel(pso, geom);
   }
 }
 
@@ -411,16 +411,26 @@ int main(int argc, const char** argv)
     shader_container->ambientLightShader = nullptr;
     shader_container->diffusalLightShader = nullptr;
 
-    float viewAngle = 45.f;
-    float fov = M_PI * viewAngle / 180.f, aspect = (double)fb.width / (double)fb.height, zNear = 0.1f, zFar = 200.0;
+    float viewAngle = 90.f;
+    float fov = LiteMath::M_PI * viewAngle / 180.f, aspect = (double)fb.width / (double)fb.height, zNear = 0.1f, zFar = 200.0;
     float f = tan(viewAngle / 2);
 
-    float perspectiveProj[16] = {
-      f / aspect, 0, 0, 0,
-      0, f, 0, 0,
-      0, 0, (zNear + zFar) / (zNear - zFar), 2 * zNear * zFar / (zNear - zFar),
-      0, 0, -1, 0, 
-    };
+    // float perspectiveProj[16] = {
+    //   f / aspect, 0, 0, 0,
+    //   0, f, 0, 0,
+    //   0, 0, (zNear + zFar) / (zNear - zFar), 2 * zNear * zFar / (zNear - zFar),
+    //   0, 0, -1, 0, 
+    // };
+
+    auto perspProj = LiteMath::perspectiveMatrix(30, (double)fb.width / (double)fb.height, 0.1, 90);
+    float *perspectiveProj = (float*)(&perspProj);
+    float pP_T[16];
+
+    for (int i = 0; i < 4; ++i) {
+      for (int j = 0; j < 4; ++j) {
+        pP_T[4 * j + i] = perspectiveProj[4 * i + j];
+      }
+    }
 
     float model[16] = {
       1, 0, 0, 0,
@@ -436,7 +446,7 @@ int main(int argc, const char** argv)
       0, 0, 0, 1,
     };
 
-    double angle = 0.f * M_PI / 180.f;
+    double angle = 0.f * LiteMath::M_PI / 180.f;
     float rotate[16] = {
       (float)cos(angle), 0, -(float)sin(angle), 0,
       0, 1, 0, 0,
@@ -447,23 +457,29 @@ int main(int argc, const char** argv)
     Mat<4, float> modelMat(model), scaleMat(scale), rotateMat(rotate);
     float t = time(NULL);
     // float cameraCoords[4] = {200 * (float)cos(t), 30, 200 * (float)sin(t), 1};
-    float cameraCoords[4] = {0, 30, -200, 1};
-    float targetCoords[4] = {0, 0, 0, 1}, upCoords[4] = {0, 1, 0, 1};
+    float cameraCoords[3] = {0, -10, 90};
+    float targetCoords[3] = {0, 0, 0}, upCoords[3] = {0, 1, 0};
     Vec<4, float> P(cameraCoords);
-    Vec<4, float> target(targetCoords), up(upCoords);
-    // float r0[4] = {0, -50, 200, 1};
-    // Vec<4, float> r0Vec(r0);
-    // Vec<4, float> r1 = P - r0Vec - r0Vec; 
-    // Vec<4, float> nP = newP + r0Vec + r0Vec;
+    // Vec<4, float> target(targetCoords), up(upCoords);
+    LiteMath::float3 eye(cameraCoords), center(targetCoords), up(upCoords);
+    auto viewMat = LiteMath::lookAt(eye, center, up);
+    float *vM = (float*)(&viewMat);
+    float vm_T[16];
 
-    Mat<4, float> viewMat = lookAt(P, target, up);
-    Mat<4, float> viewModel =  viewMat * modelMat;
+    for (int i = 0; i < 4; ++i) {
+      for (int j = 0; j < 4; ++j) {
+        vm_T[4 * j + i] = vM[4 * i + j];
+      }
+    }
+
+    // Mat<4, float> viewMat = lookAt(P, target, up);
+    // Mat<4, float> viewModel =  viewMat * modelMat;
 
     std::string file_name1 = "./data/uploads_files_3425113_VenuDeMilo.obj";
     auto objects = ObjParse(file_name1);
 
-    memcpy(objects[0].instances[0].worldViewMatrix, viewModel.getMatrix(), 16 * sizeof(float));
-    memcpy(objects[0].instances[0].projMatrix, perspectiveProj, sizeof(perspectiveProj));
+    memcpy(objects[0].instances[0].worldViewMatrix, vm_T, 16 * sizeof(float));
+    memcpy(objects[0].instances[0].projMatrix, pP_T, sizeof(pP_T));
     //objects[0].textures = {statue1};
     auto before  = std::chrono::high_resolution_clock::now();
     
@@ -478,8 +494,13 @@ int main(int argc, const char** argv)
     std::string savePath = "./output/" + name;
     SaveBMP(savePath.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
     std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-
     
+    for (int i = 0; i < fb.width * fb.height; ++i) {
+      fb.buff[i].first_part.clear();
+      fb.buff[i].second_part.clear();
+    } 
+
+    delete [] fb.buff;
   }
 
   // // test #11
