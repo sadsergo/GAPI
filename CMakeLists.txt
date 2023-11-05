@@ -37,7 +37,7 @@ add_executable(testapp main.cpp
                        ./structs/Vec.cpp
                        ./structs/Mat.cpp
                        SubPixel_buf.cpp
-                       )
+                        "color/color.cpp" "color/color.h")
 endif()
 include_directories(./ external/LiteMath)
 

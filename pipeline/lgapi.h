@@ -7,6 +7,7 @@
 #include "./structs/Vec.h"
 #include "./structs/Mat.h"
 #include "SubPixel_buf.h"
+#include "color/color.h"
 
 enum RENDER_MODE { MODE_VERT_COLOR = 0,
                    MODE_TEXURE_3D  = 1, };
@@ -69,8 +70,8 @@ struct TextureContainer {
 
 struct ShaderContainer {
   Vec4 (*vertexShader)(const float *, const Geom& , const float *);
-  uint32_t (*textureShader)(const int &, const TextureContainer &, const float [3][2], const float &, const float &, const float &, const float &);
-  Vec4 (*colorShader)(const float [3][4], const float &, const float &, const float &, const float &);
+  void (*textureShader)(const int &, const TextureContainer &, const float [3][2], const float &, const float &, const float &, const float &, Color&);
+  void (*colorShader)(const float [3][4], const float &, const float &, const float &, const float &, Color&);
   uint32_t (*lightShader)(const float col[3][4], const float &w0, const float &w1, const float &w2, const float &w);
   Vec4 (*ambientLightShader)(const Vec4 &ObjColor, const Vec4 &LightSourceColor);
   Vec4 (*diffusalLightShader)(const Vec4 &ObjColor, const Vec4 &LightColor, const Vec4 &LightDir, const Vec4 &Norm);

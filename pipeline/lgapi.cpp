@@ -12,6 +12,8 @@
 #include "./structs/Mat.h"
 #include "SubPixel_buf.h"
 
+#include "./color/color.h"
+
 
 Vec2 operator - (const Vec2 &a, const Vec2 &B) 
 {
@@ -249,6 +251,7 @@ void
 MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
 {
   float worldViewProj[16];
+  SubPixelBuf* subpixelbuf = new SubPixelBuf[fb.width * fb.height];
 
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
@@ -335,12 +338,16 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
     int x1 = std::max(0, (int32_t)(xmax)) + 1, y1 = std::max(0, (int32_t)(ymax)) + 1;
 
     float e = abs(E(A, B, C));
+    SubPixelBuf buff;
+
+    float A_c1 = 0, B_c1 = 0, C_c1 = 0, A_c2 = 0, B_c2 = 0, C_c2 = 0, A_c3 = 0, B_c3 = 0, C_c3 = 0;
 
     for (uint32_t x = x0; x <= x1 && x < fb.width; x++) {
           for (uint32_t y = y0; y <= y1 && y < fb.height; y++) {
             vec4 Point((float)x, (float)y, 0.0, 1.0);
             float w0 = E(B - A, Point - A), w1 = E(C - B, Point - B), w2 = E(A - C, Point - C);
 
+            //  If pixel is inside polygon
             if ((w0 > 0 && w1 > 0 && w2 > 0) || (w0 < 0 && w1 < 0 && w2 < 0)) {
               w0 = abs(w0) / e;
               w1 = abs(w1) / e;
@@ -348,28 +355,65 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
 
               float w = (p[2][2] * w0 + p[0][2] * w1 + p[1][2] * w2);
 
+              subpixelbuf[fb.width * y + x].type = FULL_SQUARE;
+              subpixelbuf[fb.width * y + x].square1 = 0.5;
+              subpixelbuf[fb.width * y + x].square2 = 0.5;
+
               if (1 / w < 1 / depthBuf[fb.width * y + x]) {
                 depthBuf[fb.width * y + x] = w;
                 vec4 AB = B - A, BC = C - B, CA = A - C;
                 
-                float A_c1 = AB[Y] + eps, B_c1 = -AB[X] + eps, C_c1 = -AB[Y] * A[X] + AB[X] * A[Y], 
-                      A_c2 = BC[Y] + eps, B_c2 = -BC[X] + eps, C_c2 = -BC[Y] * B[X] + BC[X] * B[Y], 
-                      A_c3 = CA[Y] + eps, B_c3 = -CA[X] + eps, C_c3 = -CA[Y] * C[X] + CA[X] * C[Y];
+                A_c1 = AB[Y] + eps, B_c1 = -AB[X] + eps, C_c1 = -AB[Y] * A[X] + AB[X] * A[Y], 
+                A_c2 = BC[Y] + eps, B_c2 = -BC[X] + eps, C_c2 = -BC[Y] * B[X] + BC[X] * B[Y], 
+                A_c3 = CA[Y] + eps, B_c3 = -CA[X] + eps, C_c3 = -CA[Y] * C[X] + CA[X] * C[Y];
 
                 if (a_state.imgId != uint32_t(-1)) {
-                  fb.data[fb.width * y + x] = a_state.shader_container->textureShader(a_state.imgId, Textures, uv, w0, w1, w2, w);
+                    Color color;
+                    a_state.shader_container->textureShader(a_state.imgId, Textures, uv, w0, w1, w2, w, color);
+
+                    subpixelbuf[fb.width * y + x].color1 = color;
+                    subpixelbuf[fb.width * y + x].color2 = color;
+
+                    subpixelbuf[fb.width * y + x].square1 = 0.5;
+                    subpixelbuf[fb.width * y + x].square2 = 0.5;
+
+                    fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
                 }
                 else {
-                  Vec4 colorV = a_state.shader_container->colorShader(col, w0, w1, w2, w);
-                  
-                  uint32_t color = ((unsigned char)(colorV.x) << 16) + ((unsigned char)(colorV.y) << 8) + ((unsigned char)(colorV.z));
-                  fb.data[fb.width * y + x] = color;
+                    Color color;
+                    a_state.shader_container->colorShader(col, w0, w1, w2, w, color);
+
+                    subpixelbuf[fb.width * y + x].color1 = color;
+                    subpixelbuf[fb.width * y + x].color2 = color;
+
+                    subpixelbuf[fb.width * y + x].square1 = 0.5;
+                    subpixelbuf[fb.width * y + x].square2 = 0.5;
+
+                    fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
+
+                    //fb.data[fb.width * y + x] = color.pack();
                 }
               }
+            }
+            else if (subpixelbuf[fb.width * y + x].type == FULL_SQUARE || subpixelbuf[fb.width * y + x].type == NOT_DIVIDED) {
+                buff = get_intersection(Point, A_c1, A_c2, A_c3, A, B, C, e);
+
+                if (buff.type == DIVIDED) {
+                    std::cout << "1";
+                }
             }
           }
         }  
     }
+
+    for (int i = 0; i < fb.height; ++i) {
+        for (int j = 0; j < fb.width; ++j) {
+            subpixelbuf[fb.width * i + j].first_part.clear();
+            subpixelbuf[fb.width * i + j].second_part.clear();
+        }
+    }
+
+    delete[] subpixelbuf;
 }
 
 // void MyRender::Draw(PipelineStateObject a_state, Geom a_geom)

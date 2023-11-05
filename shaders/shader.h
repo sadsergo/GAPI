@@ -1,5 +1,8 @@
 #pragma once
 
+#include "./color/color.h"
+
+
 Vec4 
 vertexShader(const float *rotatedWorldViewProj, const Geom &a_geom, const float vpos4f_i[4])  
 {
@@ -51,25 +54,23 @@ defaultDiffusalLightShader(const Vec4 &ObjColor, const Vec4 &LightColor, const V
   return Vec4(0.f, 0.f);
 }
 
-Vec4 
+void
 colorShader(const float col[3][4], const float &w0, 
-  const float &w1, const float &w2, const float &w)
+  const float &w1, const float &w2, const float &w, Color& color)
 {
   float red = (col[2][0] * w0 + col[0][0] * w1 + col[1][0] * w2) / w;
   float green = (col[2][1] * w0 + col[0][1] * w1 + col[1][1] * w2) / w;
   float blue = (col[2][2] * w0 + col[0][2] * w1 + col[1][2] * w2) / w;
 
-  Vec4 Res = {255 * red, 255 * green, 255 * blue, 0};
-  // unsigned int color = ((unsigned char)(255 * red) << 16) + 
-  //   ((unsigned char)(255 * green) << 8) + ((unsigned char)(255 * blue));
-  
-  return Res;
+  color.red = 255 * red;
+  color.green = 255 * green;
+  color.blue = 255 * blue;
 }
 
-uint32_t 
+void
 textureShader(const int &imgId,
   const TextureContainer &Textures, const float uv[3][2], const float &w0, 
-  const float &w1, const float &w2, const float &w)
+  const float &w1, const float &w2, const float &w, Color& color)
 {
   Image2D texture = Textures.textures[imgId];
   size_t s = texture.width * texture.height;
@@ -81,10 +82,9 @@ textureShader(const int &imgId,
   unsigned int green = (texture_color & 0x0000FF00) >> 8;
   unsigned int blue = texture_color & 0x00000FF;
 
-  uint32_t color = ((unsigned char)(red) << 16) + 
-                ((unsigned char)(green) << 8) + ((unsigned char)(blue));
-
-  return color;
+  color.red = red;
+  color.green = green;
+  color.blue = blue;
 }
 
 Vec4 
@@ -136,16 +136,16 @@ Vec4 colorCubeLightSourceShader(const float col[3][4], const float &w0,
   return Res;
 }
 
-Vec4 colorBarShader(const float col[3][4], const float &w0, 
-  const float &w1, const float &w2, const float &w)
+void colorBarShader(const float col[3][4], const float &w0,
+  const float &w1, const float &w2, const float &w, Color& color)
 {
   float red = w0;
   float green = w1;
   float blue = w2;
 
-  Vec4 Res = {255 * red, 255 * green, 255 * blue, 0};
-  
-  return Res;
+  color.red = 255 * red;
+  color.green = 255 * green;
+  color.blue = 255 * blue;
 }
 
 Vec4 colorSideShader(const float col[3][4], const float &w0, 
