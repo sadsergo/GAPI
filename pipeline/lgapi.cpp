@@ -356,6 +356,10 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                       A_c2 = BC[Y] + eps, B_c2 = -BC[X] + eps, C_c2 = -BC[Y] * B[X] + BC[X] * B[Y], 
                       A_c3 = CA[Y] + eps, B_c3 = -CA[X] + eps, C_c3 = -CA[Y] * C[X] + CA[X] * C[Y];
 
+                get_intersection(Point, A_c1, B_c1, C_c1, A, B, C, e);
+                // get_intersection(x, y, A_c2, B_c2, C_c2);
+                // get_intersection(x, y, A_c3, B_c3, C_c3);
+
                 if (a_state.imgId != uint32_t(-1)) {
                   fb.data[fb.width * y + x] = a_state.shader_container->textureShader(a_state.imgId, Textures, uv, w0, w1, w2, w);
                 }
