@@ -13,6 +13,13 @@ enum
     FULL_SQUARE = 2,
 };
 
+enum
+{
+    FIRST_PART = 1,
+    SECOND_PART = 2,
+    NO_PART = 0,
+};
+
 struct SubPixelBuf 
 {
     std::vector<vec4> first_part, second_part;
@@ -20,6 +27,7 @@ struct SubPixelBuf
     int64_t depth1, depth2;
     int type = NOT_DIVIDED;
     float square1, square2;
+    char triangle_part = NO_PART;
 
     void calculateSquare();
     Color calcPixelColor();

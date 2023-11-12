@@ -5,7 +5,7 @@
 
 struct Color
 {
-	uint8_t red, green, blue;
+	uint8_t red = 255, green = 255, blue = 255;
 
 	uint32_t pack();
 };

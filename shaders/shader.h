@@ -27,11 +27,13 @@ defaultVertexShader(const float *rotatedWorldViewProj, const Geom &a_geom, const
   return 0;
 }
 
-Vec4
-defaultColorShader(const float col[3][4], const float &w0, 
-  const float &w1, const float &w2, const float &w)
+void
+defColorShader(const float col[3][4], const float& w0,
+    const float& w1, const float& w2, const float& w, Color& color)
 {
-  return Vec4(0.f, 0.f);
+    color.red = 100;
+    color.green = 100;
+    color.blue = 0;
 }
 
 uint32_t 

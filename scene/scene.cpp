@@ -17,9 +17,9 @@ std::vector<SimpleScene> scn01_colored_triangle()
   memcpy(res.instances[0].worldViewMatrix, identity, sizeof(identity));
   memcpy(res.instances[0].projMatrix,      identity, sizeof(identity));
 
-  res.geom.vpos4f = {-0.5,-0.5,0,1, 
-                     0,0.5,0,1, 
-                     0.5,-0.5,0,1};
+  res.geom.vpos4f = {-0.00625,-0.01125,0,1,
+                     0,0.04625,0,1,
+                     0.03125,-0.03125,0,1};
   
   res.geom.vcol4f = {1,0,0,1, 
                      0,1,0,1, 
