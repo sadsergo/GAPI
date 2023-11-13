@@ -412,104 +412,105 @@ int main(int argc, const char** argv)
     // }
 
     // test #10
-    //{
-    //shader_container->vertexShader = vertexShader;
-    //shader_container->colorShader = colorBarShader;
-    //shader_container->textureShader = textureShader;
-    //shader_container->ambientLightShader = nullptr;
-    //shader_container->diffusalLightShader = nullptr;
+    {
+        shader_container->vertexShader = vertexShader;
+        //shader_container->colorShader = colorBarShader;
+        shader_container->colorShader = defColorShader;
+        shader_container->textureShader = textureShader;
+        shader_container->ambientLightShader = nullptr;
+        shader_container->diffusalLightShader = nullptr;
 
-    //float viewAngle = 90.f;
-    //float fov = LiteMath::M_PI * viewAngle / 180.f, aspect = (double)fb.width / (double)fb.height, zNear = 0.1f, zFar = 200.0;
-    //float f = tan(viewAngle / 2);
+        float viewAngle = 90.f;
+        float fov = LiteMath::M_PI * viewAngle / 180.f, aspect = (double)fb.width / (double)fb.height, zNear = 0.1f, zFar = 200.0;
+        float f = tan(viewAngle / 2);
 
-    //// float perspectiveProj[16] = {
-    ////   f / aspect, 0, 0, 0,
-    ////   0, f, 0, 0,
-    ////   0, 0, (zNear + zFar) / (zNear - zFar), 2 * zNear * zFar / (zNear - zFar),
-    ////   0, 0, -1, 0, 
-    //// };
+        // float perspectiveProj[16] = {
+        //   f / aspect, 0, 0, 0,
+        //   0, f, 0, 0,
+        //   0, 0, (zNear + zFar) / (zNear - zFar), 2 * zNear * zFar / (zNear - zFar),
+        //   0, 0, -1, 0, 
+        // };
 
-    //auto perspProj = LiteMath::perspectiveMatrix(30, (double)fb.width / (double)fb.height, 0.1, 90);
-    //float *perspectiveProj = (float*)(&perspProj);
-    //float pP_T[16];
+        auto perspProj = LiteMath::perspectiveMatrix(30, (double)fb.width / (double)fb.height, 0.1, 90);
+        float *perspectiveProj = (float*)(&perspProj);
+        float pP_T[16];
 
-    //for (int i = 0; i < 4; ++i) {
-    //    for (int j = 0; j < 4; ++j) {
-    //    pP_T[4 * j + i] = perspectiveProj[4 * i + j];
-    //    }
-    //}
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) {
+            pP_T[4 * j + i] = perspectiveProj[4 * i + j];
+            }
+        }
 
-    //float model[16] = {
-    //    1, 0, 0, 0,
-    //    0, 1, 0, 0,
-    //    0, 0, 1, 0,
-    //    0, 0, 0, 1,
-    //};
+        float model[16] = {
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1,
+        };
 
-    //float scale[16] = {
-    //    2, 0, 0, 0,
-    //    0, 2, 0, 0,
-    //    0, 0, 2, 0,
-    //    0, 0, 0, 1,
-    //};
+        float scale[16] = {
+            2, 0, 0, 0,
+            0, 2, 0, 0,
+            0, 0, 2, 0,
+            0, 0, 0, 1,
+        };
 
-    //double angle = 0.f * LiteMath::M_PI / 180.f;
-    //float rotate[16] = {
-    //    (float)cos(angle), 0, -(float)sin(angle), 0,
-    //    0, 1, 0, 0,
-    //    (float)sin(angle), 0, (float)cos(angle), 0,
-    //    0, 0, 0, 1
-    //};
-    //
-    //Mat<4, float> modelMat(model), scaleMat(scale), rotateMat(rotate);
-    //float t = time(NULL);
-    //// float cameraCoords[4] = {200 * (float)cos(t), 30, 200 * (float)sin(t), 1};
-    //float cameraCoords[3] = {0, -10, 90};
-    //float targetCoords[3] = {0, 0, 0}, upCoords[3] = {0, 1, 0};
-    //Vec<4, float> P(cameraCoords);
-    //// Vec<4, float> target(targetCoords), up(upCoords);
-    //LiteMath::float3 eye(cameraCoords), center(targetCoords), up(upCoords);
-    //auto viewMat = LiteMath::lookAt(eye, center, up);
-    //float *vM = (float*)(&viewMat);
-    //float vm_T[16];
+        double angle = 0.f * LiteMath::M_PI / 180.f;
+        float rotate[16] = {
+            (float)cos(angle), 0, -(float)sin(angle), 0,
+            0, 1, 0, 0,
+            (float)sin(angle), 0, (float)cos(angle), 0,
+            0, 0, 0, 1
+        };
+    
+        Mat<4, float> modelMat(model), scaleMat(scale), rotateMat(rotate);
+        float t = time(NULL);
+        // float cameraCoords[4] = {200 * (float)cos(t), 30, 200 * (float)sin(t), 1};
+        float cameraCoords[3] = {0, -10, 90};
+        float targetCoords[3] = {0, 0, 0}, upCoords[3] = {0, 1, 0};
+        Vec<4, float> P(cameraCoords);
+        // Vec<4, float> target(targetCoords), up(upCoords);
+        LiteMath::float3 eye(cameraCoords), center(targetCoords), up(upCoords);
+        auto viewMat = LiteMath::lookAt(eye, center, up);
+        float *vM = (float*)(&viewMat);
+        float vm_T[16];
 
-    //for (int i = 0; i < 4; ++i) {
-    //    for (int j = 0; j < 4; ++j) {
-    //    vm_T[4 * j + i] = vM[4 * i + j];
-    //    }
-    //}
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) {
+            vm_T[4 * j + i] = vM[4 * i + j];
+            }
+        }
 
-    //// Mat<4, float> viewMat = lookAt(P, target, up);
-    //// Mat<4, float> viewModel =  viewMat * modelMat;
+        // Mat<4, float> viewMat = lookAt(P, target, up);
+        // Mat<4, float> viewModel =  viewMat * modelMat;
 
-    //std::string file_name1 = "./data/uploads_files_3425113_VenuDeMilo.obj";
-    //auto objects = ObjParse(file_name1);
+        std::string file_name1 = "./data/uploads_files_3425113_VenuDeMilo.obj";
+        auto objects = ObjParse(file_name1);
 
-    //memcpy(objects[0].instances[0].worldViewMatrix, vm_T, 16 * sizeof(float));
-    //memcpy(objects[0].instances[0].projMatrix, pP_T, sizeof(pP_T));
-    ////objects[0].textures = {statue1};
-    //auto before  = std::chrono::high_resolution_clock::now();
-    //
-    //pRender->BeginRenderPass(fb);
-    //DrawInstances(objects[0], pRender, MODE_TEXURE_3D, shader_container);
-    //pRender->EndRenderPass(fb);
+        memcpy(objects[0].instances[0].worldViewMatrix, vm_T, 16 * sizeof(float));
+        memcpy(objects[0].instances[0].projMatrix, pP_T, sizeof(pP_T));
+        //objects[0].textures = {statue1};
+        auto before  = std::chrono::high_resolution_clock::now();
+    
+        pRender->BeginRenderPass(fb);
+        DrawInstances(objects[0], pRender, MODE_TEXURE_3D, shader_container);
+        pRender->EndRenderPass(fb);
 
-    //float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-    //std::cout << "test_10: " << time << " ms" << std::endl;
+        float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+        std::cout << "test_10: " << time << " ms" << std::endl;
 
-    //std::string name = imgName + "10.bmp";
-    //std::string savePath = "./output/" + name;
-    //SaveBMP(savePath.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
-    //std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-    //
-    //for (int i = 0; i < fb.width * fb.height; ++i) {
-    //    fb.buff[i].first_part.clear();
-    //    fb.buff[i].second_part.clear();
-    //} 
+        std::string name = imgName + "10.bmp";
+        std::string savePath = "./output/" + name;
+        SaveBMP(savePath.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+        std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+    
+        for (int i = 0; i < fb.width * fb.height; ++i) {
+            fb.buff[i].first_part.clear();
+            fb.buff[i].second_part.clear();
+        } 
 
-    //delete [] fb.buff;
-    //}
+        delete [] fb.buff;
+    }
 
     // // test #11
     // {

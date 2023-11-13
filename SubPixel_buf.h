@@ -24,9 +24,9 @@ struct SubPixelBuf
 {
     std::vector<vec4> first_part, second_part;
     Color color1, color2;
-    int64_t depth1, depth2;
+    float depth1 = 0, depth2 = 0;
     int type = NOT_DIVIDED;
-    float square1, square2;
+    float square1 = 0, square2 = 0;
     char triangle_part = NO_PART;
 
     void calculateSquare();

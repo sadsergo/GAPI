@@ -94,6 +94,8 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
         buff.second_part.push_back(rightUpCorner);
         buff.second_part.push_back(upPoint);
 
+        buff.calculateSquare();
+
         float w0 = E1(P2 - P1, leftUpCorner - P1), w1 = E1(P3 - P2, leftUpCorner - P2), w2 = E1(P1 - P3, leftUpCorner - P3);
 
         if ((w0 > 0 && w1 > 0 && w2 > 0) || (w0 < 0 && w1 < 0 && w2 < 0)) {
@@ -402,14 +404,17 @@ Color
 SubPixelBuf::calcPixelColor()
 {
     Color pixelColor;
+    int red = ((float)((int)color1.red) * square1 + (float)((int)color2.red) * square2);
+    int green = ((float)((int)color1.green) * square1 + (float)((int)color2.green) * square2);
+    int blue = ((float)((int)color1.blue) * square1 + (float)((int)color2.blue) * square2);
 
-    pixelColor.red = (unsigned int)(((float)color1.red * square1 + (float)color2.red * square2));
-    pixelColor.green = (unsigned int)(((float)color1.green * square1 + (float)color2.green * square2));
-    pixelColor.blue = (unsigned int)(((float)color1.blue * square1 + (float)color2.blue * square2));
+    /*red = (red > 255) ? 255 : red;
+    green = (green > 255) ? 255 : green;
+    blue = (blue > 255) ? 255 : blue;*/
 
-    /*std::cout << (((float)color1.red * square1 + (float)color2.red * square2)) << " ";*/
-    //std::cout << (int)color1.red << " " << (int)color2.red << std::endl;
-    //std::cout << (int)pixelColor.red << std::endl;
+    pixelColor.red = (unsigned int)(red);
+    pixelColor.green = (unsigned int)(green);
+    pixelColor.blue = (unsigned int)(blue);
 
     return pixelColor;
 }

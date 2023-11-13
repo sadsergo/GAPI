@@ -346,8 +346,6 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
         A_c2 = BC[Y] + eps, B_c2 = -BC[X] + eps, C_c2 = -BC[Y] * B[X] + BC[X] * B[Y],
         A_c3 = CA[Y] + eps, B_c3 = -CA[X] + eps, C_c3 = -CA[Y] * C[X] + CA[X] * C[Y];
 
-    //std::cout << A_c2 << " " << B_c2 << " " << C_c2 << std::endl;
-
     for (uint32_t x = x0; x <= x1 && x < fb.width; x++) {
           for (uint32_t y = y0; y <= y1 && y < fb.height; y++) {
             vec4 Point((float)x, (float)y, 0.0, 1.0);
@@ -359,32 +357,34 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                 buff = get_intersection(Point, A_c1, B_c1, C_c1, A, B, C, e);
                 
                 if (buff.type == DIVIDED) {
-                    if (buff.triangle_part == FIRST_PART) {
+                    if (buff.triangle_part == FIRST_PART && (1 / buff.depth1 < 1 / subpixelbuf[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / subpixelbuf[fb.width * y + x].depth2)) {
+                        subpixelbuf[fb.width * y + x] = buff;
                         Color color;
                         a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth1, color);
 
-                        buff.color1 = color;
+                        subpixelbuf[fb.width * y + x].color1 = color;
                         
-                        Color c2;
+                        Color c2(fb.data[fb.width * y + x]);
                         /*c2.red = 255;
                         c2.blue = 0;
                         c2.green = 0;*/
-                        buff.color2 = c2;
-                        fb.data[fb.width * y + x] = buff.calcPixelColor().pack();
+                        subpixelbuf[fb.width * y + x].color2 = c2;
+                        fb.data[fb.width * y + x] = subpixelbuf[fb.width * y + x].calcPixelColor().pack();
                     }
-                    else if (buff.triangle_part == SECOND_PART) {
+                    else if (buff.triangle_part == SECOND_PART && (1 / buff.depth2 < 1 / subpixelbuf[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / subpixelbuf[fb.width * y + x].depth2)) {
+                        subpixelbuf[fb.width * y + x] = buff;
                         Color color;
                         a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth2, color);
-
-                        buff.color2 = color;
+                        
+                        subpixelbuf[fb.width * y + x].color2 = color;
                         //std::cout << (int)subpixelbuf[fb.width * y + x].color2.red << " " << (int)subpixelbuf[fb.width * y + x].color2.green << " " << (int)subpixelbuf[fb.width * y + x].color2.blue << std::endl;
-                        Color c1;
+                        Color c1(fb.data[fb.width * y + x]);
                         /*c1.red = 255;
                         c1.blue = 0;
                         c1.green = 0;*/
-                        buff.color1 = c1;
-                        fb.data[fb.width * y + x] = buff.calcPixelColor().pack();
-                        std::cout << buff.square1 << " ";
+                        subpixelbuf[fb.width * y + x].color1 = c1;
+                        //std::cout << (int)buff.calcPixelColor().red << " " << (int)buff.calcPixelColor().green << " " << (int)buff.calcPixelColor().blue << std::endl;
+                        fb.data[fb.width * y + x] = subpixelbuf[fb.width * y + x].calcPixelColor().pack();
                     }
                 }
                 else {
@@ -392,110 +392,111 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
 
                     if (buff.type == DIVIDED) {
                         
-                        if (buff.triangle_part == FIRST_PART) {
+                        if (buff.triangle_part == FIRST_PART && (1 / buff.depth1 < 1 / subpixelbuf[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / subpixelbuf[fb.width * y + x].depth2)) {
+                            subpixelbuf[fb.width * y + x] = buff;
                             Color color;
                             a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth1, color);
 
-                            buff.color1 = color;
+                            subpixelbuf[fb.width * y + x].color1 = color;
 
-                            Color c2;
+                            Color c2(fb.data[fb.width * y + x]);
                             /*c2.red = 255;
                             c2.blue = 0;
                             c2.green = 0;*/
-                            buff.color2 = c2;
-                            fb.data[fb.width * y + x] = buff.calcPixelColor().pack();
+                            subpixelbuf[fb.width * y + x].color2 = c2;
+                            fb.data[fb.width * y + x] = subpixelbuf[fb.width * y + x].calcPixelColor().pack();
                             //std::cout << (int)buff.calcPixelColor().red << " " << (int)buff.calcPixelColor().green << " " << (int)buff.calcPixelColor().blue << std::endl;
                         }
-                        else if (buff.triangle_part == SECOND_PART) {
+                        else if (buff.triangle_part == SECOND_PART && (1 / buff.depth2 < 1 / subpixelbuf[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / subpixelbuf[fb.width * y + x].depth2)) {
+                            subpixelbuf[fb.width * y + x] = buff;
                             Color color;
                             a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth2, color);
 
-                            buff.color2 = color;
+                            subpixelbuf[fb.width * y + x].color2 = color;
 
-                            Color c2;
+                            Color c1(fb.data[fb.width * y + x]);
                             /*c2.red = 100;
                             c2.blue = 50;
                             c2.green = 100;*/
-                            buff.color1 = c2;
-                            fb.data[fb.width * y + x] = buff.calcPixelColor().pack();
+                            subpixelbuf[fb.width * y + x].color1 = c1;
+                            fb.data[fb.width * y + x] = subpixelbuf[fb.width * y + x].calcPixelColor().pack();
                         }
                     }
                     else {
                         buff = get_intersection(Point, A_c3, B_c3, C_c3, A, B, C, e);
 
                         if (buff.type == DIVIDED) {
-                            if (buff.triangle_part == FIRST_PART) {
+                            if (buff.triangle_part == FIRST_PART && (1 / buff.depth1 < 1 / subpixelbuf[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / subpixelbuf[fb.width * y + x].depth2)) {
+                                subpixelbuf[fb.width * y + x] = buff;
                                 Color color;
                                 a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth1, color);
 
-                                buff.color1 = color;
+                                subpixelbuf[fb.width * y + x].color1 = color;
 
-                                Color c2;
+                                Color c2(fb.data[fb.width * y + x]);
                                /* c2.red = 100;
                                 c2.blue = 50;
                                 c2.green = 100;*/
-                                buff.color2 = c2;
-                                fb.data[fb.width * y + x] = buff.calcPixelColor().pack();
+                                subpixelbuf[fb.width * y + x].color2 = c2;
+                                fb.data[fb.width * y + x] = subpixelbuf[fb.width * y + x].calcPixelColor().pack();
                             }
-                            else if (buff.triangle_part == SECOND_PART) {
+                            else if (buff.triangle_part == SECOND_PART && (1 / buff.depth2 < 1 / subpixelbuf[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / subpixelbuf[fb.width * y + x].depth2)) {
+                                subpixelbuf[fb.width * y + x] = buff;
                                 Color color;
                                 a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth2, color);
 
-                                buff.color2 = color;
+                                subpixelbuf[fb.width * y + x].color2 = color;
 
-                                Color c2;
+                                Color c1(fb.data[fb.width * y + x]);
                                 /*c2.red = 100;
                                 c2.blue = 50;
                                 c2.green = 100;*/
-                                buff.color1 = c2;
-                                fb.data[fb.width * y + x] = buff.calcPixelColor().pack();
+                                subpixelbuf[fb.width * y + x].color1 = c1;
+                                fb.data[fb.width * y + x] = subpixelbuf[fb.width * y + x].calcPixelColor().pack();
                             }
                         }
                     }
                 }
             }
-            //if (buff.triangle_part == NO_PART && (w0 > 0 && w1 > 0 && w2 > 0) || (w0 < 0 && w1 < 0 && w2 < 0)) {
-            //  w0 = abs(w0) / e;
-            //  w1 = abs(w1) / e;
-            //  w2 = abs(w2) / e;
 
-            //  float w = (p[2][2] * w0 + p[0][2] * w1 + p[1][2] * w2);
+            if (buff.triangle_part == NO_PART && ((w0 > 0 && w1 > 0 && w2 > 0) || (w0 < 0 && w1 < 0 && w2 < 0))) {
+              w0 = abs(w0) / e;
+              w1 = abs(w1) / e;
+              w2 = abs(w2) / e;
 
-            //  subpixelbuf[fb.width * y + x].type = FULL_SQUARE;
-            //  subpixelbuf[fb.width * y + x].square1 = 0.5;
-            //  subpixelbuf[fb.width * y + x].square2 = 0.5;
+              float w = (p[2][2] * w0 + p[0][2] * w1 + p[1][2] * w2);
 
-            //  if (1 / w < 1 / depthBuf[fb.width * y + x]) {
-            //    depthBuf[fb.width * y + x] = w;
+              if (1 / w < 1 / subpixelbuf[fb.width * y + x].depth1 || 1 / w < 1 / subpixelbuf[fb.width * y + x].depth2) {
+                subpixelbuf[fb.width * y + x].type = FULL_SQUARE;
+                subpixelbuf[fb.width * y + x].square1 = 0.5;
+                subpixelbuf[fb.width * y + x].square2 = 0.5;
+                subpixelbuf[fb.width * y + x].depth1 = w;
+                subpixelbuf[fb.width * y + x].depth2 = w;
+                depthBuf[fb.width * y + x] = w;
 
-            //    if (a_state.imgId != uint32_t(-1)) {
-            //        Color color;
-            //        a_state.shader_container->textureShader(a_state.imgId, Textures, uv, w0, w1, w2, w, color);
+                if (a_state.imgId != uint32_t(-1)) {
+                    Color color;
+                    a_state.shader_container->textureShader(a_state.imgId, Textures, uv, w0, w1, w2, w, color);
 
-            //        subpixelbuf[fb.width * y + x].color1 = color;
-            //        subpixelbuf[fb.width * y + x].color2 = color;
+                    subpixelbuf[fb.width * y + x].color1 = color;
+                    subpixelbuf[fb.width * y + x].color2 = color;
 
-            //        subpixelbuf[fb.width * y + x].square1 = 0.5;
-            //        subpixelbuf[fb.width * y + x].square2 = 0.5;
+                    subpixelbuf[fb.width * y + x].square1 = 0.5;
+                    subpixelbuf[fb.width * y + x].square2 = 0.5;
 
-            //        fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
-            //    }
-            //    else {
-            //        Color color;
-            //        a_state.shader_container->colorShader(col, w0, w1, w2, w, color);
+                    fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
+                }
+                else {
+                    Color color;
+                    a_state.shader_container->colorShader(col, w0, w1, w2, w, color);
 
-            //        subpixelbuf[fb.width * y + x].color1 = color;
-            //        subpixelbuf[fb.width * y + x].color2 = color;
+                    subpixelbuf[fb.width * y + x].color1 = color;
+                    subpixelbuf[fb.width * y + x].color2 = color;
 
-            //        subpixelbuf[fb.width * y + x].square1 = 0.5;
-            //        subpixelbuf[fb.width * y + x].square2 = 0.5;
-
-            //        fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
-
-            //        //fb.data[fb.width * y + x] = color.pack();
-            //    }
-            //  }
-            //}
+                    fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
+                }
+              }
+            }
           }
         }  
     }
