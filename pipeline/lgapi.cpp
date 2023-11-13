@@ -384,7 +384,6 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                         c1.green = 0;*/
                         buff.color1 = c1;
                         fb.data[fb.width * y + x] = buff.calcPixelColor().pack();
-                        std::cout << buff.square1 << " ";
                     }
                 }
                 else {
@@ -454,48 +453,48 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                     }
                 }
             }
-            //if (buff.triangle_part == NO_PART && (w0 > 0 && w1 > 0 && w2 > 0) || (w0 < 0 && w1 < 0 && w2 < 0)) {
-            //  w0 = abs(w0) / e;
-            //  w1 = abs(w1) / e;
-            //  w2 = abs(w2) / e;
+            if (buff.type == NOT_DIVIDED && ((w0 > 0 && w1 > 0 && w2 > 0) || (w0 < 0 && w1 < 0 && w2 < 0))) {
+             w0 = abs(w0) / e;
+             w1 = abs(w1) / e;
+             w2 = abs(w2) / e;
 
-            //  float w = (p[2][2] * w0 + p[0][2] * w1 + p[1][2] * w2);
+             float w = (p[2][2] * w0 + p[0][2] * w1 + p[1][2] * w2);
 
-            //  subpixelbuf[fb.width * y + x].type = FULL_SQUARE;
-            //  subpixelbuf[fb.width * y + x].square1 = 0.5;
-            //  subpixelbuf[fb.width * y + x].square2 = 0.5;
+             subpixelbuf[fb.width * y + x].type = FULL_SQUARE;
+             subpixelbuf[fb.width * y + x].square1 = 0.5;
+             subpixelbuf[fb.width * y + x].square2 = 0.5;
 
-            //  if (1 / w < 1 / depthBuf[fb.width * y + x]) {
-            //    depthBuf[fb.width * y + x] = w;
+             if (1 / w < 1 / depthBuf[fb.width * y + x]) {
+               depthBuf[fb.width * y + x] = w;
 
-            //    if (a_state.imgId != uint32_t(-1)) {
-            //        Color color;
-            //        a_state.shader_container->textureShader(a_state.imgId, Textures, uv, w0, w1, w2, w, color);
+               if (a_state.imgId != uint32_t(-1)) {
+                   Color color;
+                   a_state.shader_container->textureShader(a_state.imgId, Textures, uv, w0, w1, w2, w, color);
 
-            //        subpixelbuf[fb.width * y + x].color1 = color;
-            //        subpixelbuf[fb.width * y + x].color2 = color;
+                   subpixelbuf[fb.width * y + x].color1 = color;
+                   subpixelbuf[fb.width * y + x].color2 = color;
 
-            //        subpixelbuf[fb.width * y + x].square1 = 0.5;
-            //        subpixelbuf[fb.width * y + x].square2 = 0.5;
+                   subpixelbuf[fb.width * y + x].square1 = 0.5;
+                   subpixelbuf[fb.width * y + x].square2 = 0.5;
 
-            //        fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
-            //    }
-            //    else {
-            //        Color color;
-            //        a_state.shader_container->colorShader(col, w0, w1, w2, w, color);
+                   fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
+               }
+               else {
+                   Color color;
+                   a_state.shader_container->colorShader(col, w0, w1, w2, w, color);
 
-            //        subpixelbuf[fb.width * y + x].color1 = color;
-            //        subpixelbuf[fb.width * y + x].color2 = color;
+                   subpixelbuf[fb.width * y + x].color1 = color;
+                   subpixelbuf[fb.width * y + x].color2 = color;
 
-            //        subpixelbuf[fb.width * y + x].square1 = 0.5;
-            //        subpixelbuf[fb.width * y + x].square2 = 0.5;
+                   subpixelbuf[fb.width * y + x].square1 = 0.5;
+                   subpixelbuf[fb.width * y + x].square2 = 0.5;
 
-            //        fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
+                   fb.data[fb.width * y + x] = (subpixelbuf[fb.width * y + x].calcPixelColor()).pack();
 
-            //        //fb.data[fb.width * y + x] = color.pack();
-            //    }
-            //  }
-            //}
+                   //fb.data[fb.width * y + x] = color.pack();
+               }
+             }
+            }
           }
         }  
     }
