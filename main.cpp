@@ -6,8 +6,8 @@
 #include <cstdint>
 #include <chrono>
 #include <ctime>
-#include <filesystem>
-#include <direct.h>
+// #include <filesystem>
+// #include <direct.h>
 
 // #include <X11/Xlib.h>
 // #include <X11/Xutil.h>
@@ -119,9 +119,9 @@ int main(int argc, const char** argv)
     std::vector<unsigned> pixels;
     
     //  Only for Visual Studio Windows (just for now)
-    if (_chdir("../../../")) {
-        std::cout << "Couldn't change directory" << std::endl;
-    }
+    // if (_chdir("../../../")) {
+    //     std::cout << "Couldn't change directory" << std::endl;
+    // }
 
     pixels      = LoadBMP("./data/texture1.bmp", &w, &h);
     Image2D A = Image2D(w,h,pixels.data());
