@@ -6,27 +6,44 @@
 
 std::vector<SimpleScene> scn01_colored_triangle()
 {
-  SimpleScene res;
-  res.instances.resize(1);
+  std::vector<SimpleScene> res;
+  res.resize(2);
+  res[0].instances.resize(1);
 
   float identity[16] ={1, 0, 0, 0, 
                        0, 1, 0, 0, 
                        0, 0, 1, 0, 
                        0, 0, 0, 1 };
 
-  memcpy(res.instances[0].worldViewMatrix, identity, sizeof(identity));
-  memcpy(res.instances[0].projMatrix,      identity, sizeof(identity));
+  memcpy(res[0].instances[0].worldViewMatrix, identity, sizeof(identity));
+  memcpy(res[0].instances[0].projMatrix,      identity, sizeof(identity));
 
-  res.geom.vpos4f = {-0.00625,-0.01125,0,1,
+  res[0].geom.vpos4f = {-0.00625,-0.01125,0,1,
                      0,0.04625,0,1,
                      0.03125,-0.03125,0,1};
   
-  res.geom.vcol4f = {1,0,0,1, 
+  res[0].geom.vcol4f = {1,0,0,1,
                      0,1,0,1, 
                      0,0,1,1};
 
-  res.geom.vtex2f  = {0,0, 0,0, 0,0};
-  res.geom.indices = {0, 1, 2};
+  res[0].geom.vtex2f  = {0,0, 0,0, 0,0};
+  res[0].geom.indices = {0, 1, 2};
+
+
+  res[1].instances.resize(1);
+  memcpy(res[1].instances[0].worldViewMatrix, identity, sizeof(identity));
+  memcpy(res[1].instances[0].projMatrix, identity, sizeof(identity));
+
+  res[1].geom.vpos4f = { -0.00325,-0.01125,0.1,1,
+                     0.04,0.0625,0.1,1,
+                     0.01125,-0.03125,0.1,1 };
+
+  res[1].geom.vcol4f = { 1,0,0,1,
+                     0,1,0,1,
+                     0,0,1,1 };
+
+  res[1].geom.vtex2f = { 0,0, 0,0, 0,0 };
+  res[1].geom.indices = { 0, 1, 2 };
 
   //std::vector<SimpleScene> res_v = {res};
   //res_v[0] = res;

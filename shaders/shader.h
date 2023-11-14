@@ -31,9 +31,9 @@ void
 defColorShader(const float col[3][4], const float& w0,
     const float& w1, const float& w2, const float& w, Color& color)
 {
-    color.red = 100;
+    color.red = 0;
     color.green = 100;
-    color.blue = 0;
+    color.blue = 100;
 }
 
 uint32_t 

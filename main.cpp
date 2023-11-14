@@ -6,8 +6,8 @@
 #include <cstdint>
 #include <chrono>
 #include <ctime>
-// #include <filesystem>
-// #include <direct.h>
+ #include <filesystem>
+ #include <direct.h>
 
 // #include <X11/Xlib.h>
 // #include <X11/Xutil.h>
@@ -118,10 +118,10 @@ int main(int argc, const char** argv)
     int w, h;
     std::vector<unsigned> pixels;
     
-    //  Only for Visual Studio Windows (just for now)
-    // if (_chdir("../../../")) {
-    //     std::cout << "Couldn't change directory" << std::endl;
-    // }
+     // Only for Visual Studio Windows (just for now)
+     if (_chdir("../../../")) {
+         std::cout << "Couldn't change directory" << std::endl;
+     }
 
     pixels      = LoadBMP("./data/texture1.bmp", &w, &h);
     Image2D A = Image2D(w,h,pixels.data());
@@ -162,7 +162,7 @@ int main(int argc, const char** argv)
 
        SaveBMP(savePath.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
 
-       std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
+       std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0xFFFFFF);
 
        float time = (std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f) / 10;
        std::cout << "test_01: " << time << " ms" << std::endl;
