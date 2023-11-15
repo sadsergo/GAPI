@@ -146,8 +146,8 @@ int main(int argc, const char** argv)
      // test #01
      {
        shader_container->vertexShader = vertexShader;
-       //shader_container->colorShader = colorShader;
-       shader_container->colorShader = defColorShader;
+       shader_container->colorShader = colorShader;
+       //shader_container->colorShader = defColorShader;
        shader_container->textureShader = textureShader;
        auto objects = scn01_colored_triangle(); 
        auto before  = std::chrono::high_resolution_clock::now();  
@@ -414,8 +414,8 @@ int main(int argc, const char** argv)
     // test #10
     {
         shader_container->vertexShader = vertexShader;
-        //shader_container->colorShader = colorBarShader;
-        shader_container->colorShader = defColorShader;
+        shader_container->colorShader = colorBarShader;
+        //shader_container->colorShader = defColorShader;
         shader_container->textureShader = textureShader;
         shader_container->ambientLightShader = nullptr;
         shader_container->diffusalLightShader = nullptr;

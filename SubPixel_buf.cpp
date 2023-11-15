@@ -103,10 +103,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
             w1 = abs(w1) / e;
             w2 = abs(w2) / e;
 
+            buff.bar_cords[0] = w0;
+            buff.bar_cords[1] = w1;
+            buff.bar_cords[2] = w2;
+
             float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
             buff.triangle_part = FIRST_PART;
             buff.depth1 = w;
+            buff.depth = w;
         }
         else {
             w0 = E1(P2 - P1, rightBottomCorner - P1), w1 = E1(P3 - P2, rightBottomCorner - P2), w2 = E1(P1 - P3, rightBottomCorner - P3);
@@ -116,10 +121,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
                 w1 = abs(w1) / e;
                 w2 = abs(w2) / e;
 
+                buff.bar_cords[0] = w0;
+                buff.bar_cords[1] = w1;
+                buff.bar_cords[2] = w2;
+
                 float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
                 
                 buff.triangle_part = SECOND_PART;
                 buff.depth2 = w;
+                buff.depth = w;
             }
         }
     }
@@ -145,10 +155,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
             w1 = abs(w1) / e;
             w2 = abs(w2) / e;
 
+            buff.bar_cords[0] = w0;
+            buff.bar_cords[1] = w1;
+            buff.bar_cords[2] = w2;
+
             float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
             buff.triangle_part = FIRST_PART;
             buff.depth1 = w;
+            buff.depth = w;
         }
         else {
             w0 = E1(P2 - P1, rightUpCorner - P1), w1 = E1(P3 - P2, rightUpCorner - P2), w2 = E1(P1 - P3, rightUpCorner - P3);
@@ -158,10 +173,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
                 w1 = abs(w1) / e;
                 w2 = abs(w2) / e;
 
+                buff.bar_cords[0] = w0;
+                buff.bar_cords[1] = w1;
+                buff.bar_cords[2] = w2;
+
                 float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
                 buff.triangle_part = SECOND_PART;
                 buff.depth2 = w;
+                buff.depth = w;
             }
         }
     }
@@ -187,10 +207,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
             w1 = abs(w1) / e;
             w2 = abs(w2) / e;
 
+            buff.bar_cords[0] = w0;
+            buff.bar_cords[1] = w1;
+            buff.bar_cords[2] = w2;
+
             float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
             buff.triangle_part = FIRST_PART;
             buff.depth1 = w;
+            buff.depth = w;
         }
         else {
             w0 = E1(P2 - P1, rightBottomCorner - P1), w1 = E1(P3 - P2, rightBottomCorner - P2), w2 = E1(P1 - P3, rightBottomCorner - P3);
@@ -200,10 +225,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
                 w1 = abs(w1) / e;
                 w2 = abs(w2) / e;
 
+                buff.bar_cords[0] = w0;
+                buff.bar_cords[1] = w1;
+                buff.bar_cords[2] = w2;
+
                 float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
                 buff.triangle_part = SECOND_PART;
                 buff.depth2 = w;
+                buff.depth = w;
             }
         }
     }
@@ -229,10 +259,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
             w1 = abs(w1) / e;
             w2 = abs(w2) / e;
 
+            buff.bar_cords[0] = w0;
+            buff.bar_cords[1] = w1;
+            buff.bar_cords[2] = w2;
+
             float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
             buff.triangle_part = FIRST_PART;
             buff.depth1 = w;
+            buff.depth = w;
         }
         else {
             w0 = E1(P2 - P1, rightBottomCorner - P1), w1 = E1(P3 - P2, rightBottomCorner - P2), w2 = E1(P1 - P3, rightBottomCorner - P3);
@@ -242,10 +277,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
                 w1 = abs(w1) / e;
                 w2 = abs(w2) / e;
 
+                buff.bar_cords[0] = w0;
+                buff.bar_cords[1] = w1;
+                buff.bar_cords[2] = w2;
+
                 float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
                 buff.triangle_part = SECOND_PART;
                 buff.depth2 = w;
+                buff.depth = w;
             }
         }
     }
@@ -271,10 +311,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
             w1 = abs(w1) / e;
             w2 = abs(w2) / e;
 
+            buff.bar_cords[0] = w0;
+            buff.bar_cords[1] = w1;
+            buff.bar_cords[2] = w2;
+
             float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
             buff.triangle_part = FIRST_PART;
             buff.depth1 = w;
+            buff.depth = w;
         }
         else {
             w0 = E1(P2 - P1, rightUpCorner - P1), w1 = E1(P3 - P2, rightUpCorner - P2), w2 = E1(P1 - P3, rightUpCorner - P3);
@@ -284,10 +329,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
                 w1 = abs(w1) / e;
                 w2 = abs(w2) / e;
 
+                buff.bar_cords[0] = w0;
+                buff.bar_cords[1] = w1;
+                buff.bar_cords[2] = w2;
+
                 float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
                 buff.triangle_part = FIRST_PART;
                 buff.depth1 = w;
+                buff.depth = w;
             }
             else {
                 w0 = E1(P2 - P1, leftBottomCorner - P1), w1 = E1(P3 - P2, leftBottomCorner - P2), w2 = E1(P1 - P3, leftBottomCorner - P3);
@@ -297,10 +347,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
                     w1 = abs(w1) / e;
                     w2 = abs(w2) / e;
 
+                    buff.bar_cords[0] = w0;
+                    buff.bar_cords[1] = w1;
+                    buff.bar_cords[2] = w2;
+
                     float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
                     buff.triangle_part = SECOND_PART;
                     buff.depth2 = w;
+                    buff.depth = w;
                 }
                 else {
                     w0 = E1(P2 - P1, rightBottomCorner - P1), w1 = E1(P3 - P2, rightBottomCorner - P2), w2 = E1(P1 - P3, rightBottomCorner - P3);
@@ -310,10 +365,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
                         w1 = abs(w1) / e;
                         w2 = abs(w2) / e;
 
+                        buff.bar_cords[0] = w0;
+                        buff.bar_cords[1] = w1;
+                        buff.bar_cords[2] = w2;
+
                         float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
                         buff.triangle_part = SECOND_PART;
                         buff.depth2 = w;
+                        buff.depth = w;
                     }
                 }
             }
@@ -341,10 +401,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
             w1 = abs(w1) / e;
             w2 = abs(w2) / e;
 
+            buff.bar_cords[0] = w0;
+            buff.bar_cords[1] = w1;
+            buff.bar_cords[2] = w2;
+
             float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
             buff.triangle_part = FIRST_PART;
             buff.depth1 = w;
+            buff.depth = w;
         }
         else {
             w0 = E1(P2 - P1, leftBottomCorner - P1), w1 = E1(P3 - P2, leftBottomCorner - P2), w2 = E1(P1 - P3, leftBottomCorner - P3);
@@ -354,10 +419,15 @@ get_intersection(const vec4& P, const float& A, const float& B, const float& C, 
                 w1 = abs(w1) / e;
                 w2 = abs(w2) / e;
 
+                buff.bar_cords[0] = w0;
+                buff.bar_cords[1] = w1;
+                buff.bar_cords[2] = w2;
+
                 float w = (P3[2] * w0 + P1[2] * w1 + P2[2] * w2);
 
                 buff.triangle_part = SECOND_PART;
                 buff.depth2 = w;
+                buff.depth = w;
             }
         }
     }

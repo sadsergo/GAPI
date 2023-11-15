@@ -24,10 +24,12 @@ struct SubPixelBuf
 {
     std::vector<vec4> first_part, second_part;
     Color color1, color2;
-    float depth1 = 0, depth2 = 0;
+    float depth = 0;    //  For experiment (what if to use only one depth in pixel)
+    float depth1 = 0, depth2 = 0;   //  Each pixel fragment has its own depth
     int type = NOT_DIVIDED;
     float square1 = 0, square2 = 0;
     char triangle_part = NO_PART;
+    float bar_cords[3];
 
     void calculateSquare();
     Color calcPixelColor();

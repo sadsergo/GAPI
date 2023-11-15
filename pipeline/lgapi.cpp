@@ -364,7 +364,7 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                     this->subpixelbuff[fb.width * y + x].depth2 = depth2;
                         
                     Color color;
-                    a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth1, color);
+                    a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth1, color);
 
                     this->subpixelbuff[fb.width * y + x].color1 = color;
                         
@@ -380,7 +380,7 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                     this->subpixelbuff[fb.width * y + x] = buff;
                     this->subpixelbuff[fb.width * y + x].depth1 = depth1;
                     Color color;
-                    a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth2, color);
+                    a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth2, color);
                         
                     this->subpixelbuff[fb.width * y + x].color2 = color;
                     //std::cout << (int)subpixelbuf[fb.width * y + x].color2.red << " " << (int)subpixelbuf[fb.width * y + x].color2.green << " " << (int)subpixelbuf[fb.width * y + x].color2.blue << std::endl;
@@ -403,7 +403,7 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                         this->subpixelbuff[fb.width * y + x] = buff;
                         this->subpixelbuff[fb.width * y + x].depth2 = depth2;
                         Color color;
-                        a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth1, color);
+                        a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth1, color);
 
                         this->subpixelbuff[fb.width * y + x].color1 = color;
 
@@ -420,7 +420,7 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                         this->subpixelbuff[fb.width * y + x] = buff;
                         this->subpixelbuff[fb.width * y + x].depth1 = depth1;
                         Color color;
-                        a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth2, color);
+                        a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth2, color);
 
                         this->subpixelbuff[fb.width * y + x].color2 = color;
 
@@ -441,7 +441,7 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                             this->subpixelbuff[fb.width * y + x] = buff;
                             this->subpixelbuff[fb.width * y + x].depth2 = depth2;
                             Color color;
-                            a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth1, color);
+                            a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth1, color);
 
                             this->subpixelbuff[fb.width * y + x].color1 = color;
 
@@ -457,7 +457,7 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                             this->subpixelbuff[fb.width * y + x] = buff;
                             this->subpixelbuff[fb.width * y + x].depth1 = depth1;
                             Color color;
-                            a_state.shader_container->colorShader(col, w0, w1, w2, buff.depth2, color);
+                            a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth2, color);
 
                             this->subpixelbuff[fb.width * y + x].color2 = color;
 
@@ -479,7 +479,7 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
 
               float w = (p[2][2] * w0 + p[0][2] * w1 + p[1][2] * w2);
 
-              if (1 / w < 1 / this->subpixelbuff[fb.width * y + x].depth1 && 1 / w < 1 / this->subpixelbuff[fb.width * y + x].depth2) {
+              if (1 / w < 1 / this->subpixelbuff[fb.width * y + x].depth1 || 1 / w < 1 / this->subpixelbuff[fb.width * y + x].depth2) {
                 this->subpixelbuff[fb.width * y + x].type = FULL_SQUARE;
                 this->subpixelbuff[fb.width * y + x].square1 = 0.5;
                 this->subpixelbuff[fb.width * y + x].square2 = 0.5;
