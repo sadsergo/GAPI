@@ -80,9 +80,9 @@ textureShader(const int &imgId,
   int uv2 = (w0 * uv[2][1] + w1 * uv[0][1] + w2 * uv[1][1]) / w * texture.height;
 
   unsigned int texture_color = texture.data[(texture.width * uv2 + uv1) % (s)];
-  unsigned int red = (texture_color & 0x00FF0000) >> 16;
+  unsigned int blue = (texture_color & 0x00FF0000) >> 16;
   unsigned int green = (texture_color & 0x0000FF00) >> 8;
-  unsigned int blue = texture_color & 0x00000FF;
+  unsigned int red = texture_color & 0x00000FF;
 
   color.red = red;
   color.green = green;

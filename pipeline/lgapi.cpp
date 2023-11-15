@@ -358,13 +358,19 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
             buff = get_intersection(Point, A_c1, B_c1, C_c1, A, B, C, e);
                 
             if (buff.type == DIVIDED) {
-                if (buff.triangle_part == FIRST_PART && (buff.square1 / buff.square2 >= 1.f / 3.f || buff.square1 / buff.square2 >= 3.f) && (1 / buff.depth1 < 1 / this->subpixelbuff[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / this->subpixelbuff[fb.width * y + x].depth2)) {
+                if (buff.triangle_part == FIRST_PART && buff.square1 / buff.square2 >= 1.f / 3.f && (1 / buff.depth < 1 / this->subpixelbuff[fb.width * y + x].depth)) {
                     float depth2 = std::max(this->subpixelbuff[fb.width * y + x].depth1, this->subpixelbuff[fb.width * y + x].depth2);
                     this->subpixelbuff[fb.width * y + x] = buff;
                     this->subpixelbuff[fb.width * y + x].depth2 = depth2;
                         
                     Color color;
-                    a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth1, color);
+                    
+                    if (a_state.imgId != uint32_t(-1)) {
+                        a_state.shader_container->textureShader(a_state.imgId, Textures, uv, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                    }
+                    else {
+                        a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                    }
 
                     this->subpixelbuff[fb.width * y + x].color1 = color;
                         
@@ -375,12 +381,18 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                     this->subpixelbuff[fb.width * y + x].color2 = c2;
                     fb.data[fb.width * y + x] = this->subpixelbuff[fb.width * y + x].calcPixelColor().pack();
                 }
-                else if (buff.triangle_part == SECOND_PART && (buff.square2 / buff.square1 >= 1.f / 3.f || buff.square2 / buff.square1 >= 3.f) && (1 / buff.depth2 < 1 / this->subpixelbuff[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / this->subpixelbuff[fb.width * y + x].depth2)) {
+                else if (buff.triangle_part == SECOND_PART && (buff.square2 / buff.square1 >= 1.f / 3.f) && (1 / buff.depth < 1 / this->subpixelbuff[fb.width * y + x].depth)) {
                     float depth1 = std::max(this->subpixelbuff[fb.width * y + x].depth1, this->subpixelbuff[fb.width * y + x].depth2);
                     this->subpixelbuff[fb.width * y + x] = buff;
                     this->subpixelbuff[fb.width * y + x].depth1 = depth1;
                     Color color;
-                    a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth2, color);
+                    
+                    if (a_state.imgId != uint32_t(-1)) {
+                        a_state.shader_container->textureShader(a_state.imgId, Textures, uv, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                    }
+                    else {
+                        a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                    }
                         
                     this->subpixelbuff[fb.width * y + x].color2 = color;
                     //std::cout << (int)subpixelbuf[fb.width * y + x].color2.red << " " << (int)subpixelbuf[fb.width * y + x].color2.green << " " << (int)subpixelbuf[fb.width * y + x].color2.blue << std::endl;
@@ -398,12 +410,18 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
 
                 if (buff.type == DIVIDED) {
                         
-                    if (buff.triangle_part == FIRST_PART && (buff.square1 / buff.square2 >= 1.f / 3.f || buff.square1 / buff.square2 >= 3.f) && (1 / buff.depth1 < 1 / this->subpixelbuff[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / this->subpixelbuff[fb.width * y + x].depth2)) {
+                    if (buff.triangle_part == FIRST_PART && (buff.square1 / buff.square2 >= 1.f / 3.f) && (1 / buff.depth < 1 / this->subpixelbuff[fb.width * y + x].depth)) {
                         float depth2 = std::max(this->subpixelbuff[fb.width * y + x].depth1, this->subpixelbuff[fb.width * y + x].depth2);
                         this->subpixelbuff[fb.width * y + x] = buff;
                         this->subpixelbuff[fb.width * y + x].depth2 = depth2;
                         Color color;
-                        a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth1, color);
+                       
+                        if (a_state.imgId != uint32_t(-1)) {
+                            a_state.shader_container->textureShader(a_state.imgId, Textures, uv, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                        }
+                        else {
+                            a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                        }
 
                         this->subpixelbuff[fb.width * y + x].color1 = color;
 
@@ -415,12 +433,18 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                         fb.data[fb.width * y + x] = this->subpixelbuff[fb.width * y + x].calcPixelColor().pack();
                         //std::cout << (int)buff.calcPixelColor().red << " " << (int)buff.calcPixelColor().green << " " << (int)buff.calcPixelColor().blue << std::endl;
                     }
-                    else if (buff.triangle_part == SECOND_PART && (buff.square2 / buff.square1 >= 1.f / 3.f || buff.square2 / buff.square1 >= 3.f) && (1 / buff.depth2 < 1 / this->subpixelbuff[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / this->subpixelbuff[fb.width * y + x].depth2)) {
+                    else if (buff.triangle_part == SECOND_PART && (buff.square2 / buff.square1 >= 1.f / 3.f) && (1 / buff.depth < 1 / this->subpixelbuff[fb.width * y + x].depth)) {
                         float depth1 = std::max(this->subpixelbuff[fb.width * y + x].depth1, this->subpixelbuff[fb.width * y + x].depth2);
                         this->subpixelbuff[fb.width * y + x] = buff;
                         this->subpixelbuff[fb.width * y + x].depth1 = depth1;
                         Color color;
-                        a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth2, color);
+                        
+                        if (a_state.imgId != uint32_t(-1)) {
+                            a_state.shader_container->textureShader(a_state.imgId, Textures, uv, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                        }
+                        else {
+                            a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                        }
 
                         this->subpixelbuff[fb.width * y + x].color2 = color;
 
@@ -436,12 +460,18 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                     buff = get_intersection(Point, A_c3, B_c3, C_c3, A, B, C, e);
 
                     if (buff.type == DIVIDED) {
-                        if (buff.triangle_part == FIRST_PART && (buff.square1 / buff.square2 >= 1.f / 3.f || buff.square1 / buff.square2 >= 3.f) && (1 / buff.depth1 < 1 / this->subpixelbuff[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / this->subpixelbuff[fb.width * y + x].depth2)) {
+                        if (buff.triangle_part == FIRST_PART && (buff.square1 / buff.square2 >= 1.f / 3.f) && (1 / buff.depth < 1 / this->subpixelbuff[fb.width * y + x].depth)) {
                             float depth2 = std::max(this->subpixelbuff[fb.width * y + x].depth1, this->subpixelbuff[fb.width * y + x].depth2);
                             this->subpixelbuff[fb.width * y + x] = buff;
                             this->subpixelbuff[fb.width * y + x].depth2 = depth2;
                             Color color;
-                            a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth1, color);
+                            
+                            if (a_state.imgId != uint32_t(-1)) {
+                                a_state.shader_container->textureShader(a_state.imgId, Textures, uv, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                            }
+                            else {
+                                a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                            }
 
                             this->subpixelbuff[fb.width * y + x].color1 = color;
 
@@ -452,12 +482,18 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
                             this->subpixelbuff[fb.width * y + x].color2 = c2;
                             fb.data[fb.width * y + x] = this->subpixelbuff[fb.width * y + x].calcPixelColor().pack();
                         }
-                        else if (buff.triangle_part == SECOND_PART && (buff.square2 / buff.square1 >= 1.f / 3.f || buff.square2 / buff.square1 >= 3.f) && (1 / buff.depth2 < 1 / this->subpixelbuff[fb.width * y + x].depth1 || 1 / buff.depth1 < 1 / this->subpixelbuff[fb.width * y + x].depth2)) {
+                        else if (buff.triangle_part == SECOND_PART && (buff.square2 / buff.square1 >= 1.f / 3.f) && (1 / buff.depth < 1 / this->subpixelbuff[fb.width * y + x].depth)) {
                             float depth1 = std::max(this->subpixelbuff[fb.width * y + x].depth1, this->subpixelbuff[fb.width * y + x].depth2);
                             this->subpixelbuff[fb.width * y + x] = buff;
                             this->subpixelbuff[fb.width * y + x].depth1 = depth1;
                             Color color;
-                            a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth2, color);
+                            
+                            if (a_state.imgId != uint32_t(-1)) {
+                                a_state.shader_container->textureShader(a_state.imgId, Textures, uv, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                            }
+                            else {
+                                a_state.shader_container->colorShader(col, buff.bar_cords[0], buff.bar_cords[1], buff.bar_cords[2], buff.depth, color);
+                            }
 
                             this->subpixelbuff[fb.width * y + x].color2 = color;
 
@@ -479,32 +515,28 @@ MyRender::Draw_SubPixel(PipelineStateObject a_state, Geom a_geom)
 
               float w = (p[2][2] * w0 + p[0][2] * w1 + p[1][2] * w2);
 
-              if (1 / w < 1 / this->subpixelbuff[fb.width * y + x].depth1 || 1 / w < 1 / this->subpixelbuff[fb.width * y + x].depth2) {
+              if (1 / w < 1 / this->subpixelbuff[fb.width * y + x].depth) {
                 this->subpixelbuff[fb.width * y + x].type = FULL_SQUARE;
                 this->subpixelbuff[fb.width * y + x].square1 = 0.5;
                 this->subpixelbuff[fb.width * y + x].square2 = 0.5;
                 this->subpixelbuff[fb.width * y + x].depth1 = w;
                 this->subpixelbuff[fb.width * y + x].depth2 = w;
+                this->subpixelbuff[fb.width * y + x].depth = w;
                 depthBuf[fb.width * y + x] = w;
 
+                Color color;
+
                 if (a_state.imgId != uint32_t(-1)) {
-                    Color color;
                     a_state.shader_container->textureShader(a_state.imgId, Textures, uv, w0, w1, w2, w, color);
-
-                    this->subpixelbuff[fb.width * y + x].color1 = color;
-                    this->subpixelbuff[fb.width * y + x].color2 = color;
-
-                    fb.data[fb.width * y + x] = (this->subpixelbuff[fb.width * y + x].calcPixelColor()).pack();
                 }
                 else {
-                    Color color;
                     a_state.shader_container->colorShader(col, w0, w1, w2, w, color);
-
-                    this->subpixelbuff[fb.width * y + x].color1 = color;
-                    this->subpixelbuff[fb.width * y + x].color2 = color;
-
-                    fb.data[fb.width * y + x] = (this->subpixelbuff[fb.width * y + x].calcPixelColor()).pack();
                 }
+
+                this->subpixelbuff[fb.width * y + x].color1 = color;
+                this->subpixelbuff[fb.width * y + x].color2 = color;
+
+                fb.data[fb.width * y + x] = (this->subpixelbuff[fb.width * y + x].calcPixelColor()).pack();
               }
             }
           }
