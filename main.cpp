@@ -348,27 +348,27 @@ int main(int argc, const char** argv)
     //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
     // }
 
-    // // test #08
-    // {
-    //   shader_container->vertexShader = vertexShader;
-    //   shader_container->colorShader = colorShader;
-    //   shader_container->textureShader = textureShader;
-    //   auto objects = scn08_terrain(terrainTex);
-    //   auto before  = std::chrono::high_resolution_clock::now();
+     // test #08
+     {
+       shader_container->vertexShader = vertexShader;
+       shader_container->colorShader = colorShader;
+       shader_container->textureShader = textureShader;
+       auto objects = scn08_terrain(terrainTex);
+       auto before  = std::chrono::high_resolution_clock::now();
     
-    //   pRender->BeginRenderPass(fb);
-    //   for(const auto& obj : objects)
-    //     DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
-    //   pRender->EndRenderPass(fb);
+       pRender->BeginRenderPass(fb);
+       for(const auto& obj : objects)
+         DrawInstances(obj, pRender, MODE_TEXURE_3D, shader_container);
+       pRender->EndRenderPass(fb);
 
-    //   float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
-    //   std::cout << "test_08: " << time << " ms" << std::endl;
+       float time = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - before).count()/1000.f;
+       std::cout << "test_08: " << time << " ms" << std::endl;
 
-    //   std::string name = imgName + "08.bmp";  
-    //   SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
+       std::string name = imgName + "08.bmp";  
+       SaveBMP(name.c_str(), pixelData.data(), WIN_WIDTH, WIN_HEIGHT);
 
-    //   std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0);
-    // }
+       std::fill(&fb.data[0], &fb.data[fb.width * fb.height - 1], 0xFFFFFF);
+     }
 
     // // test #09
     // {

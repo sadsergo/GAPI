@@ -95,8 +95,11 @@ struct IRender
   virtual unsigned int AddImage(const Image2D &a_img) = 0;
 
   virtual void BeginRenderPass(Image2D &fb, LightObj *L = 0) = 0;
-  // virtual void Draw(PipelineStateObject a_state, Geom a_geom) = 0;
+  //virtual void Draw_rasterisation(PipelineStateObject a_state, Geom a_geom) = 0;
   // virtual void Vec_Draw(PipelineStateObject a_state, Geom a_geom) = 0;
   virtual void EndRenderPass(Image2D &fb) = 0;
   virtual void Draw_SubPixel(PipelineStateObject a_state, Geom a_geom) = 0;
+
 };
+
+
