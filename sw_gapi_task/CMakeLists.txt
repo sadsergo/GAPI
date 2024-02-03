@@ -23,23 +23,14 @@ find_package(OpenMP)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
 
-if(USE_OPENGL)
-add_executable(testapp main.cpp 
-                       Bitmap.cpp
-                       lgapi_ref.cpp
-                       scene.cpp)
-else()
 add_executable(testapp main.cpp 
                        Bitmap.cpp
                        lgapi.cpp
                        scene.cpp
-                       )
-endif()
+                        "window/window.h" "window/window.cpp" "structs/structs.h" "structs/structs.cpp" "window/AppWindow.cpp" "window/AppWindow.h")
+
+include_directories(./ external/LiteMath)
 
 set_target_properties(testapp PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 
-if(USE_OPENGL)
-  target_link_libraries(testapp LINK_PUBLIC OpenMP::OpenMP_CXX X11 GL GLU glut) # for reference implementation
-else()
-  target_link_libraries(testapp LINK_PUBLIC OpenMP::OpenMP_CXX X11)                 # for your implementation
-endif()
+target_link_libraries(testapp LINK_PUBLIC OpenMP::OpenMP_CXX)                 # for your implementation
