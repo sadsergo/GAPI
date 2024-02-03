@@ -1,0 +1,3 @@
+C:/Users/nikit/source/repos/windows_gapi/sw_gapi_task/out/build/Mingw64-Release/CMakeFiles/testapp.dir
+C:/Users/nikit/source/repos/windows_gapi/sw_gapi_task/out/build/Mingw64-Release/CMakeFiles/edit_cache.dir
+C:/Users/nikit/source/repos/windows_gapi/sw_gapi_task/out/build/Mingw64-Release/CMakeFiles/rebuild_cache.dir

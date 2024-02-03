@@ -1,0 +1,11 @@
+# ninja log v5
+57	360	7286842023007832	CMakeFiles/testapp.dir/structs/structs.cpp.obj	7b07c4c95725966
+33	1869	7286842038121194	CMakeFiles/testapp.dir/Bitmap.cpp.obj	f86eee57f1f4dc15
+38	3075	7286842050181572	CMakeFiles/testapp.dir/lgapi.cpp.obj	90c1d2edb68fee9e
+44	3694	7286842056326771	CMakeFiles/testapp.dir/scene.cpp.obj	d46515ceeb780017
+64	4115	7286842060577017	CMakeFiles/testapp.dir/window/appWindow.cpp.obj	bb86eb8bcdf5bc08
+50	4146	7286842060887087	CMakeFiles/testapp.dir/window/window.cpp.obj	5ab0e84e3e44aa8b
+10	6940	7286842088803751	CMakeFiles/testapp.dir/main.cpp.obj	befb0ded762958b9
+6941	7226	7286842091644266	testapp.exe	92d429a39f5a8614
+15	1158	7286844557068518	CMakeFiles/testapp.dir/lgapi.cpp.obj	90c1d2edb68fee9e
+1159	1422	7286844559649097	testapp.exe	92d429a39f5a8614
