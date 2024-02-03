@@ -5,3 +5,6 @@
 /.vs
 /out/build/x64-Debug
 /sw_gapi_task/out/build/x64-Debug
+/out
+/build
+CMakeSettings.json
