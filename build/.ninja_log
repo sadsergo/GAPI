@@ -1,9 +1,0 @@
-# ninja log v5
-61	265	7289200694022906	CMakeFiles/app.dir/structs/structs.cpp.obj	680246f3471342b7
-56	1872	7289200710106523	CMakeFiles/app.dir/window/window.cpp.obj	102fd1057c47aeda
-41	880	7289200700184282	CMakeFiles/app.dir/bitmap/Bitmap.cpp.obj	c6851024ca9ed922
-46	1218	7289200703555053	CMakeFiles/app.dir/lgapi.cpp.obj	f2beae49afd758c
-50	1813	7289200709506402	CMakeFiles/app.dir/scene/scene.cpp.obj	159f80d08714baea
-65	1821	7289200709586410	CMakeFiles/app.dir/window/appWindow.cpp.obj	f1580362754b9190
-19	2526	7289200716638001	CMakeFiles/app.dir/main.cpp.obj	88f3c3634e36f724
-2527	2785	7289200719178773	app.exe	362427462cc52742

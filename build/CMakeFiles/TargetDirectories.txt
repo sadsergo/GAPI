@@ -1,3 +1,0 @@
-F:/windows_version/GAPI/build/CMakeFiles/gapi.dir
-F:/windows_version/GAPI/build/CMakeFiles/edit_cache.dir
-F:/windows_version/GAPI/build/CMakeFiles/rebuild_cache.dir
