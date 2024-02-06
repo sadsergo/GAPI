@@ -1,44 +1,14 @@
 [
 {
   "directory": "F:/windows_version/GAPI/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -D_CRT_SECURE_NO_WARNINGS -IF:/windows_version/GAPI/. -IF:/windows_version/GAPI/external/LiteMath -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles\\app.dir\\main.cpp.obj -c F:\\windows_version\\GAPI\\main.cpp",
-  "file": "F:\\windows_version\\GAPI\\main.cpp",
-  "output": "CMakeFiles\\app.dir\\main.cpp.obj"
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -D_CRT_SECURE_NO_WARNINGS @CMakeFiles/gapi.dir/includes_CXX.rsp -O3 -DNDEBUG -o CMakeFiles\\gapi.dir\\win_app.cpp.obj -c F:\\windows_version\\GAPI\\win_app.cpp",
+  "file": "F:/windows_version/GAPI/win_app.cpp",
+  "output": "CMakeFiles/gapi.dir/win_app.cpp.obj"
 },
 {
   "directory": "F:/windows_version/GAPI/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -D_CRT_SECURE_NO_WARNINGS -IF:/windows_version/GAPI/. -IF:/windows_version/GAPI/external/LiteMath -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles\\app.dir\\bitmap\\Bitmap.cpp.obj -c F:\\windows_version\\GAPI\\bitmap\\Bitmap.cpp",
-  "file": "F:\\windows_version\\GAPI\\bitmap\\Bitmap.cpp",
-  "output": "CMakeFiles\\app.dir\\bitmap\\Bitmap.cpp.obj"
-},
-{
-  "directory": "F:/windows_version/GAPI/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -D_CRT_SECURE_NO_WARNINGS -IF:/windows_version/GAPI/. -IF:/windows_version/GAPI/external/LiteMath -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles\\app.dir\\lgapi.cpp.obj -c F:\\windows_version\\GAPI\\lgapi.cpp",
-  "file": "F:\\windows_version\\GAPI\\lgapi.cpp",
-  "output": "CMakeFiles\\app.dir\\lgapi.cpp.obj"
-},
-{
-  "directory": "F:/windows_version/GAPI/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -D_CRT_SECURE_NO_WARNINGS -IF:/windows_version/GAPI/. -IF:/windows_version/GAPI/external/LiteMath -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles\\app.dir\\scene\\scene.cpp.obj -c F:\\windows_version\\GAPI\\scene\\scene.cpp",
-  "file": "F:\\windows_version\\GAPI\\scene\\scene.cpp",
-  "output": "CMakeFiles\\app.dir\\scene\\scene.cpp.obj"
-},
-{
-  "directory": "F:/windows_version/GAPI/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -D_CRT_SECURE_NO_WARNINGS -IF:/windows_version/GAPI/. -IF:/windows_version/GAPI/external/LiteMath -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles\\app.dir\\window\\window.cpp.obj -c F:\\windows_version\\GAPI\\window\\window.cpp",
-  "file": "F:\\windows_version\\GAPI\\window\\window.cpp",
-  "output": "CMakeFiles\\app.dir\\window\\window.cpp.obj"
-},
-{
-  "directory": "F:/windows_version/GAPI/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -D_CRT_SECURE_NO_WARNINGS -IF:/windows_version/GAPI/. -IF:/windows_version/GAPI/external/LiteMath -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles\\app.dir\\structs\\structs.cpp.obj -c F:\\windows_version\\GAPI\\structs\\structs.cpp",
-  "file": "F:\\windows_version\\GAPI\\structs\\structs.cpp",
-  "output": "CMakeFiles\\app.dir\\structs\\structs.cpp.obj"
-},
-{
-  "directory": "F:/windows_version/GAPI/build",
-  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -D_CRT_SECURE_NO_WARNINGS -IF:/windows_version/GAPI/. -IF:/windows_version/GAPI/external/LiteMath -O3 -DNDEBUG -std=gnu++17 -o CMakeFiles\\app.dir\\window\\appWindow.cpp.obj -c F:\\windows_version\\GAPI\\window\\appWindow.cpp",
-  "file": "F:\\windows_version\\GAPI\\window\\appWindow.cpp",
-  "output": "CMakeFiles\\app.dir\\window\\appWindow.cpp.obj"
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe -D_CRT_SECURE_NO_WARNINGS @CMakeFiles/gapi.dir/includes_CXX.rsp -O3 -DNDEBUG -o CMakeFiles\\gapi.dir\\window\\appWindow.cpp.obj -c F:\\windows_version\\GAPI\\window\\appWindow.cpp",
+  "file": "F:/windows_version/GAPI/window/appWindow.cpp",
+  "output": "CMakeFiles/gapi.dir/window/appWindow.cpp.obj"
 }
 ]

@@ -1,16 +1,10 @@
 #pragma once
 
-#include "window.h"
+#include <SDL3/SDL.h>
 
-
-class AppWindow: public Window
-{
-public:
-	AppWindow();
-	~AppWindow();
-
-	// Inherited via Window
-	void onCreate() override;
-	void onUpdate() override;
-	void onDestroy() override;
-};
+void app();
+static int APP_IS_RUNNING;
+void process_input();
+void update();
+void render(SDL_Renderer* renderer);
+void destroy_window(SDL_Window* window, SDL_Renderer* renderer);

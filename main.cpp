@@ -16,10 +16,8 @@
 #include "shaders/shader.h"
 #include "objparsing/OBJparsing.h"
 
-#include "./window/AppWindow.h"
+#include "window/appWindow.h"
 
-
-std::shared_ptr<IRender> MakeReferenceImpl(); ///< reference implementation via OpenGL
 std::shared_ptr<IRender> MakeMyImpl();        ///< your implementation
 
 void DrawInstances(const SimpleScene& scn, std::shared_ptr<IRender> pRender, RENDER_MODE a_mode, ShaderContainer* shader_container, float angle = 0.0)
@@ -73,15 +71,7 @@ int main(int argc, const char** argv)
         std::cout << "Couldn't change directory" << std::endl;
     }
 
-    AppWindow app;
-
-    if (app.init())
-    {
-        while (app.isRun())
-        {
-            app.broadcast();
-        }
-    }
+    app();
 
     int w, h;
     std::vector<unsigned> pixels;

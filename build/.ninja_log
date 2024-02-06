@@ -1,17 +1,9 @@
 # ninja log v5
-73	313	7286871633865786	CMakeFiles/testapp.dir/structs/structs.cpp.obj	47dacadc01390878
-58	2060	7286873294696395	CMakeFiles/app.dir/window/appWindow.cpp.obj	a33b020baff3bcbc
-52	1007	7286871640787327	CMakeFiles/testapp.dir/Bitmap.cpp.obj	df41c29462b334be
-57	1391	7286871644638186	CMakeFiles/testapp.dir/lgapi.cpp.obj	21aca3249e55f76f
-79	2150	7286871652220836	CMakeFiles/testapp.dir/window/appWindow.cpp.obj	8bac3c4d5ac145f4
-21	4368	7286871674355753	CMakeFiles/testapp.dir/main.cpp.obj	3efd11703fdd830e
-61	2151	7286871652210822	CMakeFiles/testapp.dir/scene.cpp.obj	18453f1747676d85
-67	2177	7286871652480889	CMakeFiles/testapp.dir/window/window.cpp.obj	6b944aa9af897b7e
-4369	4646	7286871677126357	testapp.exe	91a80e5f19f6089e
-51	294	7286873277080207	CMakeFiles/app.dir/structs/structs.cpp.obj	9881513233d1cd7b
-29	936	7286873283511631	CMakeFiles/app.dir/bitmap/Bitmap.cpp.obj	e1e2908e5c6d57e1
-34	1342	7286873287572536	CMakeFiles/app.dir/lgapi.cpp.obj	93f4d008352eef6c
-46	2137	7286873295516570	CMakeFiles/app.dir/window/window.cpp.obj	1b9049072115a814
-5	4378	7286873317917291	CMakeFiles/app.dir/main.cpp.obj	7ba9fe29ad736d95
-16	1703	7286873885899611	CMakeFiles/app.dir/scene/scene.cpp.obj	b23515ae89697328
-1704	1975	7286873888570199	app.exe	362427462cc52742
+61	265	7289200694022906	CMakeFiles/app.dir/structs/structs.cpp.obj	680246f3471342b7
+56	1872	7289200710106523	CMakeFiles/app.dir/window/window.cpp.obj	102fd1057c47aeda
+41	880	7289200700184282	CMakeFiles/app.dir/bitmap/Bitmap.cpp.obj	c6851024ca9ed922
+46	1218	7289200703555053	CMakeFiles/app.dir/lgapi.cpp.obj	f2beae49afd758c
+50	1813	7289200709506402	CMakeFiles/app.dir/scene/scene.cpp.obj	159f80d08714baea
+65	1821	7289200709586410	CMakeFiles/app.dir/window/appWindow.cpp.obj	f1580362754b9190
+19	2526	7289200716638001	CMakeFiles/app.dir/main.cpp.obj	88f3c3634e36f724
+2527	2785	7289200719178773	app.exe	362427462cc52742
